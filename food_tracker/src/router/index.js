@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import DishList from "../views/DishList.vue";
 import DishDetails from "../views/DishDetails.vue";
 
+
 Vue.use(VueRouter);
 
 const routes = [
@@ -12,7 +13,7 @@ const routes = [
     component: DishList
   },
   {
-    path: "/details/:id:name",
+    path: "/details/:name/:id",
     name: "DishDetails",
     component: DishDetails,
     params: true

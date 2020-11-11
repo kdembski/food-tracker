@@ -1,11 +1,7 @@
 <template>
   <div>
     <nav class="navbar sticky-top navbar-expand-lg" id="nav-div">
-      <img
-        src="./assets/logo.png"
-        id="navbrand"
-        loading="lazy"
-      />
+      <img src="./assets/logo.png" id="navbrand" loading="lazy" />
       <button
         class="navbar-toggler navbar-dark"
         type="button"
@@ -39,13 +35,13 @@
 #nav-div {
   background-color: #424242;
   font-family: "Work Sans", sans-serif;
-  font-weight: 800;
+  font-weight: 600;
 }
 #navbrand {
   width: 50px;
   height: 50px;
   border-radius: 60px;
-  margin-right: 20px;
+  margin-right: 40px;
   background-color: #ffcc00;
   border: 0px solid black;
   box-shadow: 0px 0px 1px 1px black;
@@ -54,42 +50,46 @@ nav a {
   color: #ffcc00;
   position: relative;
 }
-nav li{
+nav li {
   margin: 0 20px;
 }
 nav a:hover {
-  color: #fff494;
+  color: #fff9c6;
   text-decoration: none;
 }
 nav a::after {
   content: "";
   display: block;
-  height: 7px;
-  margin-top: 14px;
-  background-color: #fff494;
+  height: 5px;
+  margin-top: 15px;
+  background-color: #fff9c6;
 
   position: absolute;
   width: 0%;
 
-  transition: all ease-in-out 250ms;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
-@media (max-width: 990px){
-  nav a::after{
+@media (max-width: 990px) {
+  nav a::after {
     height: 4px;
-    margin-top: -5px;
+    margin-top: -3px;
   }
-  #nav-items-div{
+  #nav-items-div {
     margin-top: 20px;
   }
-  nav li{
-  margin: 0;
-}
+  nav li {
+    margin: 0;
+    margin-bottom: 10px;
+  }
 }
 nav a:hover::after {
   width: 100%;
 }
 .router-link-exact-active {
-  color: #fff494;
+  color: #fff9c6;
 }
 .router-link-exact-active::after {
   width: 100%;
