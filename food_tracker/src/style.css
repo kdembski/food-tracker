@@ -1,0 +1,884 @@
+@import url("https://fonts.googleapis.com/css?family=Work+Sans:400,600");
+
+:root {
+  --baseYellow: #ffc800;
+  --darkYellow: #ffaa00;
+  --lightYellow: #ffffc8;
+  --baseGrey: #424242;
+  --lightGrey: #dddddd;
+}
+/*----------------dish details--------------*/
+.dish-image-xl {
+  height: 460px;
+  width: 100%;
+  object-fit: cover;
+  box-shadow: 3px 3px 5px 1px rgba(0, 0, 0, 0.2);
+}
+.dish-image-xl.alt-image-xl {
+  background-color: whitesmoke;
+  padding: 5% 20%;
+  object-fit: contain;
+}
+#dish-name {
+  font-size: 35px;
+  font-weight: 600;
+  margin: 0;
+}
+#stars label {
+  font-size: 40px;
+  margin: 0;
+  margin-right: 5px;
+}
+#kcal span,
+#portions span,
+#preptime span {
+  font-size: 35px;
+  color: var(--baseYellow);
+}
+#kcal p,
+#portions p,
+#preptime p {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+.border-bottom {
+  border-bottom: 1px solid var(--lightGrey);
+}
+#dish-div {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.2);
+  padding: 16px 32px;
+}
+#dish-div::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  left: 15px;
+  bottom: 0px;
+  border-bottom: 1px solid var(--lightGrey);
+}
+.step-div,
+.ingredient-div {
+  position: relative;
+}
+.ingredient-div::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: -2px;
+  z-index: -1;
+  border-bottom: 1px solid var(--lightGrey);
+}
+.ingredient-div p {
+  font-size: 18px;
+}
+.edit-ingredient-buttons-div {
+  position: relative;
+  display: flex;
+  justify-content: start;
+  top: -4px;
+}
+.edit-step-buttons-div {
+  display: flex;
+  justify-content: start;
+}
+.dish-inputs-list,
+.dish-ingredients-list,
+.dish-steps-list {
+  transition: all 0.1s;
+}
+.main-add-div,
+.step-main-div,
+.ingredient-main-div {
+  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.2);
+  padding: 16px 32px;
+}
+
+/*----------------transitions--------------*/
+.slideDishDiv-leave-to,
+.slideDishDiv-enter {
+  z-index: -999;
+  right: -600px;
+  transform: scale(0.1);
+}
+.slideDishDiv-enter-active {
+  transition: all 0.25s;
+  z-index: -999;
+}
+.slideDishDiv-leave,
+.slideDishDiv-enter-to {
+  right: 0;
+  transform: scale(1);
+  z-index: -999;
+}
+.slideDishDiv-leave-active {
+  transition: all 0.25s;
+  z-index: -999;
+}
+
+.slideEditIngredientButtons-leave-to {
+  opacity: 0;
+  transform: translateX(50px);
+}
+.slideEditIngredientButtons-enter {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+.slideEditIngredientButtons-enter-active {
+  transition: all 0.1s;
+}
+.slideEditIngredientButtons-leave-active {
+  transition: all 0.1s;
+}
+
+.slideEditStepButtons-leave-to {
+  opacity: 0;
+  transform: translateX(50px);
+}
+.slideEditStepButtons-enter {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+.slideEditStepButtons-enter-active {
+  transition: all 0.1s;
+}
+.slideEditStepButtons-leave-active {
+  transition: all 0.1s;
+}
+
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(-50px);
+}
+.list-leave-active {
+  position: absolute;
+}
+.list-move {
+  transition: all 0.2s;
+}
+/*----------------buttons--------------*/
+.button {
+  position: relative;
+  width: 120px;
+  height: 40px;
+  background-color: var(--baseYellow);
+  cursor: pointer;
+  color: var(--baseGrey);
+  overflow: hidden;
+  transition: all 0.2s ease-out;
+  box-shadow: 3px 3px 5px 1px rgba(0, 0, 0, 0.5);
+}
+.button span,
+.button .button-icon {
+  display: block;
+  text-align: center;
+  position: absolute;
+}
+.button span {
+  width: 63%;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  transform: scaleX(0.8);
+  text-transform: uppercase;
+  right: 0;
+  top: 9px;
+  margin-right: -100px;
+  transition: all 0.2s ease-out;
+}
+.button .button-icon {
+  font-size: 27px;
+  width: 100%;
+  left: 0;
+  transition: all 0.2s ease-out;
+}
+.button:hover {
+  background-color: var(--baseGrey);
+}
+.button-icon::after {
+  content: "";
+  background-color: var(--baseGrey);
+  width: 2px;
+  height: 80%;
+  border-radius: 10px;
+  position: absolute;
+  top: 10%;
+  right: -10px;
+  transition: all 0.2s ease-out;
+}
+.button:hover span {
+  margin-right: 0px;
+  color: var(--lightYellow);
+}
+.button:hover .button-icon {
+  width: 37%;
+  color: var(--lightYellow);
+}
+.button:hover .button-icon::after {
+  right: -1px;
+  background-color: var(--lightYellow);
+}
+.button:active {
+  box-shadow: 0 0 0 0;
+  transform: translateX(3px);
+  transform: translateY(3px);
+}
+.button-small {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  width: 30px;
+  height: 30px;
+  background-color: var(--baseYellow);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  transition: transform 0.5s cubic-bezier(0, 1.2, 0.5, 0.9);
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.5);
+}
+.button-small:hover {
+  background-color: var(--baseGrey);
+  color: var(--lightYellow);
+}
+.button-small:active {
+  box-shadow: 0 0 0 0;
+  transform: translateX(2px);
+  transform: translateY(2px);
+}
+.button-small.button-xxs {
+  width: 24px;
+  min-width: 24px;
+  height: 22px;
+  font-size: 18px;
+  box-shadow: 0 0 0 0;
+  background: transparent;
+}
+.button-small.button-xxs:hover {
+  color: var(--baseYellow);
+}
+.button-transparent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  color: var(--baseGrey);
+}
+.button-transparent:hover {
+  color: var(--baseYellow);
+}
+.button-transparent:active {
+  transform: scale(0.9);
+}
+/*----------------edited stars--------------*/
+input.star-icon {
+  display: none;
+}
+input.star-icon:checked ~ label.star-icon::before {
+  content: "\2605";
+  color: var(--baseYellow);
+}
+.edit-stars div {
+  margin-top: -15px;
+}
+.edit-stars label {
+  font-size: 40px;
+  margin: 0;
+  padding-right: 5px;
+}
+.edit-stars label.star-icon {
+  transition: all 0.1s;
+}
+.edit-stars label.star-icon:hover {
+  transform: scale(1.3);
+  color: var(--baseYellow);
+}
+.edit-stars label.star-icon:hover ~ label.star-icon::before {
+  color: var(--baseYellow);
+}
+
+/*----------------custom inputs--------------*/
+.form-control.custom-input {
+  border: 0;
+  border-bottom: 2px solid var(--lightGrey);
+  border-radius: 0;
+  position: relative;
+}
+.form-control.custom-input:focus {
+  border-bottom: 2px solid var(--baseYellow);
+  box-shadow: inset 0 0 0, 0 0 0;
+}
+
+/*----------------custom modals--------------*/
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+.overlay .modal-content {
+  box-shadow: 2px 2px 7px 2px rgba(0, 0, 0, 0.4);
+  border: 0;
+  border-radius: 0;
+}
+.overlay .modal-header {
+  background-color: var(--lightGrey);
+  border-radius: 0;
+  margin-right: 1px;
+}
+.overlay .modal-footer {
+  justify-content: center;
+  padding: 6px;
+  border-radius: 0;
+  margin-right: 1px;
+}
+.choose-ingredient {
+  display: block;
+  width: 100%;
+  margin: 0;
+}
+.choose-ingredient > input {
+  visibility: hidden;
+  position: absolute;
+}
+.choose-ingredient > input + div {
+  cursor: pointer;
+}
+.choose-ingredient > div:hover {
+  background-color: whitesmoke;
+}
+.choose-ingredient > input:checked + div {
+  background-color: rgb(235, 235, 235);
+  margin-bottom: 0px;
+}
+
+/*----------------custom alerts--------------*/
+.alert.custom-alert {
+  border-radius: 0;
+  border: 0;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 10px;
+}
+.alert.custom-alert::after {
+  content: "(kliknij aby zamknąć)";
+  font-size: 12px;
+  font-style: italic;
+  color: var(--baseGrey);
+}
+.alert.custom-alert-small {
+  border-radius: 0;
+  border: 0;
+  background-color: white;
+  color: rgb(180, 0, 0);
+  padding: 0 12px;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  overflow: hidden;
+  position: relative;
+}
+/*----------------dish list--------------*/
+div.row {
+  margin: 0;
+  padding: 0;
+}
+.header {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 800;
+  margin: 0;
+}
+.dish-image {
+  width: 100%;
+  height: 220px;
+  border: 1px solid var(--lightGrey);
+  object-fit: cover;
+}
+.dish-image.alt-image {
+  background-color: whitesmoke;
+  padding: 3% 10%;
+  object-fit: contain;
+}
+.clock-icon {
+  color: var(--baseYellow);
+  font-size: 25px;
+  transition: all 0.2s ease-out;
+}
+.people-icon {
+  color: var(--baseYellow);
+  font-size: 25px;
+  transition: all 0.2s ease-out;
+}
+.star-icon {
+  font-size: 25px;
+  margin: 0;
+  margin-top: -15px;
+  color: var(--lightGrey);
+  transition: all 0.2s ease-out;
+}
+.star-icon:before {
+  content: "\2605";
+}
+.checked {
+  color: var(--baseYellow);
+}
+.dish-div {
+  width: calc(100% / 6);
+  display: inline-block;
+  height: 360px;
+  padding: 0 16px;
+  text-align: center;
+  transition: all 0.2s ease-out;
+  position: relative;
+}
+
+.dish-div::before,
+.dish-div::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 0%;
+  height: 100%;
+  transition: all 0.2s ease-out;
+  z-index: -999;
+}
+.dish-div::before {
+  left: 50%;
+  border-bottom: 4px solid var(--baseGrey);
+}
+.dish-div::after {
+  right: 50%;
+  border-bottom: 4px solid var(--baseGrey);
+}
+.dish-div:hover::after {
+  width: 45%;
+}
+.dish-div:hover::before {
+  width: 45%;
+}
+
+.dish-div:hover .clock-icon,
+.dish-div:hover .star-icon.checked,
+.dish-div:hover .people-icon {
+  color: var(--baseGrey);
+}
+.dish-div:hover .star-icon {
+  color: var(--lightGrey);
+}
+.dish-div.add-dish-div {
+  position: relative;
+  top: -67px;
+  margin-bottom: -67px;
+}
+.preptime p {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 0;
+  padding: 0;
+}
+.portions p {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 0;
+  padding: 0;
+}
+.details .rating,
+.details .preptime,
+.details .portions {
+  padding: 0;
+}
+.dish-name {
+  height: 60px;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+#add-icon {
+  border: 1px solid var(--lightGrey);
+  background-color: whitesmoke;
+  font-size: 120px;
+  color: var(--baseGrey);
+}
+#add-icon::before {
+  position: absolute;
+  margin-top: 50px;
+  margin-left: -60px;
+}
+.routerlink {
+  color: black;
+}
+.routerlink:hover {
+  color: black;
+  text-decoration: none;
+}
+.ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/*----------------filters--------------*/
+.filters-button {
+  background-color: var(--baseYellow);
+  height: 50px;
+  width: 140px;
+  border-radius: 0;
+  cursor: pointer;
+  color: var(--baseGrey);
+  position: fixed;
+  left: -100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  box-shadow: 3px 3px 5px 1px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s;
+}
+.filters-button div {
+  position: absolute;
+  right: 8px;
+  font-size: 25px;
+}
+.filters-button span {
+  position: absolute;
+  font-family: "Work Sans", sans-serif;
+  text-transform: uppercase;
+  left: 10px;
+  font-size: 18px;
+}
+.filters-button:hover {
+  background-color: var(--baseGrey);
+  color: var(--lightYellow);
+  left: 0;
+}
+#filters-bar {
+  height: 100%;
+  width: 230px;
+  position: fixed;
+  z-index: 999;
+  left: -235px;
+  top: 0;
+  background-color: var(--baseGrey);
+  overflow-x: hidden;
+  transition: all 0.25s;
+  margin-top: 65px;
+  background: rgba(80, 80, 80, 0.96);
+  box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.8);
+}
+#search-bar {
+  height: 0%;
+  width: 100%;
+  position: fixed;
+  z-index: 998;
+  left: 0;
+  top: -5px;
+  background-color: var(--baseGrey);
+  overflow: hidden;
+  transition: all 0.15s;
+  margin-top: 65px;
+  background: rgba(80, 80, 80, 0.96);
+  box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.8);
+}
+.form-control.custom-input.search-input {
+  position: absolute;
+  top: 15px;
+  width: 100%;
+  padding-left: 64px;
+  padding-right: 64px;
+  font-size: 28px;
+  background-color: transparent;
+  color: white;
+  font-weight: 400;
+  border: 0;
+}
+.form-control.custom-input.search-input::placeholder {
+  color: var(--lightGrey);
+  font-weight: 300;
+}
+#hide-search-bar-button,
+#hide-filter-bar-button {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  margin: 10px;
+  color: var(--baseYellow);
+  z-index: 999;
+}
+#hide-search-bar-button {
+  top: 20px;
+  right: 10px;
+}
+#hide-filter-bar-button {
+  right: 0;
+  top: 0;
+}
+#hide-search-bar-button:hover,
+#hide-filter-bar-button:hover {
+  color: var(--lightYellow);
+}
+
+.filter-dishes > input {
+  visibility: hidden;
+  position: absolute;
+}
+.filter-dishes > input ~ p {
+  cursor: pointer;
+  margin: 0;
+  color: white;
+  margin-left: 40px;
+}
+.filter-dishes > p:hover {
+  color: var(--lightYellow);
+}
+.filter-dishes > input:checked ~ p {
+  color: var(--baseYellow);
+}
+.filter-dishes > input:checked + span::after {
+  background: var(--baseYellow);
+}
+.filters-header {
+  color: white;
+  font-weight: 400;
+  font-size: 20px;
+}
+.filters-checkmark::after {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: transparent;
+  border: 1px solid var(--lightYellow);
+  margin-top: 5px;
+  margin-left: 10px;
+}
+.reset-filters-button {
+  position: absolute;
+  bottom: 90px;
+  left: 55px;
+}
+/*----------------navbar--------------*/
+#nav-div {
+  background-color: #424242;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 600;
+  box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.8);
+}
+#navbrand {
+  width: 50px;
+  height: 50px;
+  border-radius: 60px;
+  margin-right: 15px;
+  margin-left: 0;
+  background-color: #ffcc00;
+  border: 0px solid black;
+  box-shadow: 0px 0px 1px 1px black;
+  transition: all 0.15s ease-in-out;
+}
+#navbrand:hover {
+  background-color: #fff9c6;
+}
+nav a {
+  color: #ffcc00;
+  position: relative;
+  transition: all 0.15s ease-in-out;
+}
+nav li {
+  margin: 0 15px;
+}
+nav a:hover {
+  color: #fff9c6;
+  text-decoration: none;
+}
+nav a::after,
+nav a::before {
+  content: "";
+  display: block;
+  height: 3px;
+  background-color: #fff9c6;
+  position: absolute;
+  bottom: -4px;
+  width: 0%;
+  transition: all 0.15s ease-in-out;
+}
+nav a::before {
+  left: 50%;
+}
+nav a::after {
+  right: 50%;
+}
+nav a:hover::after {
+  width: 50%;
+}
+nav a:hover::before {
+  width: 50%;
+}
+
+.router-link-exact-active {
+  color: #fff9c6;
+}
+.router-link-exact-active::after,
+.router-link-exact-active::before {
+  width: 50%;
+}
+/*----------------ingredients--------------*/
+#units-table thead,
+#ingredients-table thead {
+  background-color: var(--lightGrey);
+}
+#units-table tbody tr:hover,
+#ingredients-table tbody tr:hover {
+  background-color: var(--lightYellow);
+}
+
+/*----------------media--------------*/
+@media (max-width: 1800px) {
+  .dish-div {
+    width: calc(100% / 5);
+  }
+}
+@media (max-width: 1500px) {
+  .dish-div {
+    width: calc(100% / 4);
+  }
+}
+@media (max-width: 1230px) {
+  .dish-div {
+    width: calc(100% / 3);
+  }
+}
+@media (max-width: 992px) {
+  #dish-image {
+    height: auto;
+  }
+  #alt-image {
+    height: auto;
+  }
+  #dish-div::after {
+    border: 0px;
+  }
+  nav a::after,
+  nav a::before {
+    bottom: -2px;
+  }
+  #nav-items-div {
+    margin-top: 20px;
+  }
+  nav li {
+    margin: 0;
+    margin-bottom: 10px;
+  }
+  .slideDishDiv-leave-to,
+  .slideDishDiv-enter {
+    right: -120%;
+  }
+  .form-control.custom-input.search-input {
+    padding-right: 31px;
+    padding-left: 31px;
+  }
+}
+@media (max-width: 950px) {
+  .dish-div {
+    width: calc(100% / 2);
+  }
+}
+@media (max-width: 660px) {
+  .dish-div {
+    width: calc(100%);
+    height: 380px;
+  }
+  .star-icon {
+    font-size: 35px;
+  }
+  .clock-icon {
+    font-size: 35px;
+  }
+  .people-icon {
+    font-size: 35px;
+  }
+  .preptime p {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 0;
+    padding: 0;
+  }
+  .portions p {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 0;
+    padding: 0;
+  }
+  .dish-div.add-dish-div {
+    position: relative;
+    top: 0;
+    margin-bottom: 0;
+  }
+}
+@media (max-width: 576px) {
+  #search-div button {
+    margin-bottom: 10px;
+  }
+  #header {
+    margin-bottom: 10px;
+  }
+  #header {
+    font-size: 25px;
+  }
+  .dish-image-xl {
+    height: 300px;
+  }
+  #dish-name {
+    font-size: 28px;
+  }
+  div h2 {
+    font-size: 25px;
+  }
+  div h5 {
+    font-size: 18px;
+  }
+  #dish-div,
+  .step-main-div,
+  .ingredient-main-div {
+    padding: 16px 16px;
+  }
+}
+@media (max-width: 420px) {
+  .dish-div {
+    height: 360px;
+  }
+  .star-icon {
+    font-size: 25px;
+  }
+  .clock-icon {
+    font-size: 25px;
+  }
+  .people-icon {
+    font-size: 25px;
+  }
+  .preptime p {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 0;
+    padding: 0;
+  }
+  .portions p {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 0;
+    padding: 0;
+  }
+}

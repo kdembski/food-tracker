@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import DishList from "../views/DishList.vue";
 import DishDetails from "../views/DishDetails.vue";
+import IngredientList from "../views/IngredientList.vue";
+import AddDish from "../views/AddDish.vue";
 
 
 Vue.use(VueRouter);
@@ -17,7 +19,18 @@ const routes = [
     name: "DishDetails",
     component: DishDetails,
     params: true
+  },
+  {
+    path: "/adddish",
+    name: "AddDish",
+    component: AddDish,
+  },
+  {
+    path: "/ingredientlist",
+    name: "IngredientList",
+    component: IngredientList,
   }
+
 ];
 
 const router = new VueRouter({

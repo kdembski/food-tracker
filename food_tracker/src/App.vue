@@ -16,10 +16,10 @@
       <div class="collapse navbar-collapse" id="nav-items-div">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <router-link to="/">GŁÓWNA</router-link>
+            <router-link to="/dishlist">PRZEPISY</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/dishlist">PRZEPISY</router-link>
+            <router-link to="/ingredientlist">SKŁADNIKI</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/calendar">KALENDARZ</router-link>
@@ -30,68 +30,3 @@
     <router-view />
   </div>
 </template>
-<style>
-@import url("https://fonts.googleapis.com/css?family=Work+Sans:400,600");
-#nav-div {
-  background-color: #424242;
-  font-family: "Work Sans", sans-serif;
-  font-weight: 600;
-}
-#navbrand {
-  width: 50px;
-  height: 50px;
-  border-radius: 60px;
-  margin-right: 40px;
-  background-color: #ffcc00;
-  border: 0px solid black;
-  box-shadow: 0px 0px 1px 1px black;
-}
-nav a {
-  color: #ffcc00;
-  position: relative;
-}
-nav li {
-  margin: 0 20px;
-}
-nav a:hover {
-  color: #fff9c6;
-  text-decoration: none;
-}
-nav a::after {
-  content: "";
-  display: block;
-  height: 5px;
-  margin-top: 15px;
-  background-color: #fff9c6;
-
-  position: absolute;
-  width: 0%;
-
-  -webkit-transition: all 0.2s ease-in-out;
-  -moz-transition: all 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
-}
-@media (max-width: 990px) {
-  nav a::after {
-    height: 4px;
-    margin-top: -3px;
-  }
-  #nav-items-div {
-    margin-top: 20px;
-  }
-  nav li {
-    margin: 0;
-    margin-bottom: 10px;
-  }
-}
-nav a:hover::after {
-  width: 100%;
-}
-.router-link-exact-active {
-  color: #fff9c6;
-}
-.router-link-exact-active::after {
-  width: 100%;
-}
-</style>

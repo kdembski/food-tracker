@@ -1,248 +1,918 @@
 <template>
-  <div class="container-lg mt-3 mt-lg-5">
+  <div class="container-xl py-2 px-xl-4 py-lg-4  main-container">
     <!---->
-    <div class="row" v-for="dish in dish" :key="dish.dish_id">
+    <div class="row" v-for="(dish, index) in dish" :key="index">
       <!--image-->
-      <div class="col-lg-7 mb-3 mb-lg-5 order-2 d-flex justify-content-end">
+      <div class="col-lg-7 px-0 px-lg-3 order-2 d-flex justify-content-end" id="image-div">
         <img
-          v-if="dish.image != ''"
-          v-bind:src="dish.image"
-          alt=""
-          id="dish-image"
+          v-if="!imgError"
+          :src="dish.image"
+          class="dish-image-xl"
+          @error="imgError = true"
         />
-        <img v-else src="../assets/logo.png" alt="" id="alt-image" />
+        <img
+          v-else
+          src="../assets/logo.png"
+          class="dish-image-xl alt-image-xl"
+        />
       </div>
 
-      <!--dish not edited-->
-      <div v-if="!isDishEdited" class="col-lg-5 mb-3 mb-lg-5 order-1">
-        <!--name-->
-        <div class="row mb-3">
-          <p id="dish-name">{{ dish.dish_name }}</p>
-        </div>
-        <!--prep time-->
-        <div class="row mb-1" id="preptime">
-          <span class="fas fa-clock clock-icon"></span>
-          <div class="col align-self-center">
-            <p>{{ dish.preparation_time }} min.</p>
+      <transition name="slideDishDiv" mode="out-in">
+        <!--dish not edited-->
+        <div
+          v-if="!isDishEdited"
+          class="col-lg-5 order-1"
+          id="dish-div"
+          key="main"
+        >
+          <div>
+            <!--name-->
+            <div class="row mb-3">
+              <p id="dish-name">{{ dish.dish_name }}</p>
+            </div>
+            <!--prep time-->
+            <div class="row mb-3" id="preptime">
+              <span class="fas fa-clock"></span>
+              <div class="col align-self-center">
+                <p>{{ dish.preparation_time }} min.</p>
+              </div>
+            </div>
+            <!--portions-->
+            <div class="row mb-3" id="portions">
+              <span class="fas fa-user-friends"></span>
+              <div class="col align-self-center">
+                <p>{{ dish.portions }} os.</p>
+              </div>
+            </div>
+            <!--kcal-->
+            <div class="row" id="kcal">
+              <span class="fas fa-fire-alt"></span>
+              <div class="col align-self-center">
+                <p>{{ kcalSum }} kcal</p>
+              </div>
+            </div>
+            <!--rating-->
+            <div class="row mb-1" id="stars">
+              <div v-for="index in 5" :key="index">
+                <label
+                  class="star-icon checked"
+                  v-if="dish.rating >= index"
+                ></label>
+                <label v-else class="star-icon"></label>
+              </div>
+            </div>
           </div>
         </div>
-        <!--rating-->
-        <div class="row mb-3" id="stars">
-          <div v-for="index in 5" :key="index">
-            <label
-              class="star-icon checked"
-              v-if="dish.rating >= index"
-            ></label>
-            <label v-else class="star-icon"></label>
+        <!--dish edited-->
+        <div v-else class="col-lg-5 order-1" id="dish-div" key="edit">
+          <transition name="input-list">
+            <div class="dish-input-list">
+              <div
+                v-show="editingDishError && editingDishErrorAlert"
+                class="alert custom-alert alert-danger"
+                role="alert"
+                @click="hideAlert"
+              >
+                Nie udało sie zaktualizować przepisu!
+              </div>
+
+              <!--name-->
+              <div class="row">
+                <h6>Nazwa przepisu:</h6>
+              </div>
+              <div class="row">
+                <input
+                  type="text"
+                  v-model="dish.dish_name"
+                  class="form-control custom-input"
+                />
+              </div>
+              <div
+                v-show="dish.dish_name == '' && editingDishError == true"
+                class="alert custom-alert-small alert-danger"
+                role="alert"
+              >
+                Nazwa przepisu nie może być pusta
+              </div>
+              <!--prep time-->
+              <div class="row mt-2">
+                <h6>Czas przygotowania (min):</h6>
+              </div>
+              <div class="row">
+                <input
+                  type="number"
+                  v-model="dish.preparation_time"
+                  class="form-control custom-input"
+                />
+              </div>
+              <div
+                v-show="
+                  (dish.preparation_time < 1 ||
+                    dish.preparation_time > 999 ||
+                    dish.preparation_time == '') &&
+                    editingDishError == true
+                "
+                class="alert custom-alert-small alert-danger"
+                role="alert"
+              >
+                Czas przygotowania musi być z przedziału od 1 do 999
+              </div>
+              <!--portions-->
+              <div class="row mt-2">
+                <h6>Liczba porcji:</h6>
+              </div>
+              <div class="row">
+                <input
+                  type="number"
+                  v-model="dish.portions"
+                  class="form-control custom-input"
+                />
+              </div>
+              <div
+                v-show="
+                  (dish.portions < 1 ||
+                    dish.portions > 99 ||
+                    dish.portions == '') &&
+                    editingDishError == true
+                "
+                class="alert custom-alert-small alert-danger"
+                role="alert"
+              >
+                Liczba porcji musi być z przedziału od 1 do 99
+              </div>
+              <!--image-->
+              <div class="row mt-2">
+                <h6>Zdjęcie (link):</h6>
+              </div>
+              <div class="row">
+                <input
+                  type="url"
+                  v-model="dish.image"
+                  class="form-control custom-input"
+                />
+              </div>
+              <!--rating-->
+              <div class="row mt-2">
+                <h6 style="margin-bottom:-10px">Ocena:</h6>
+              </div>
+              <div class="edit-stars">
+                <div class="row mb-1">
+                  <input
+                    class="star-icon order-10"
+                    id="star-5"
+                    type="radio"
+                    name="star"
+                    value="5"
+                    v-model="starValue"
+                  />
+                  <label class="star-icon star-5 order-9" for="star-5"></label>
+
+                  <input
+                    class="star-icon order-8"
+                    id="star-4"
+                    type="radio"
+                    name="star"
+                    value="4"
+                    v-model="starValue"
+                  />
+                  <label class="star-icon star-4 order-7" for="star-4"></label>
+
+                  <input
+                    class="star-icon order-6"
+                    id="star-3"
+                    type="radio"
+                    name="star"
+                    value="3"
+                    v-model="starValue"
+                  />
+                  <label class="star-icon star-3 order-5" for="star-3"></label>
+
+                  <input
+                    class="star-icon order-4"
+                    id="star-2"
+                    type="radio"
+                    name="star"
+                    value="2"
+                    v-model="starValue"
+                  />
+                  <label class="star-icon star-2 order-3" for="star-2"></label>
+
+                  <input
+                    class="star-icon order-2"
+                    id="star-1"
+                    type="radio"
+                    name="star"
+                    value="1"
+                    v-model="starValue"
+                  />
+                  <label class="star-icon star-1 order-1" for="star-1"></label>
+                </div>
+              </div>
+            </div>
+          </transition>
+        </div>
+      </transition>
+    </div>
+
+    <!--buttons-->
+    <div class="row mt-3 mb-3 mb-lg-5 ">
+      <div class="col">
+        <div v-if="!isDishEdited" class="row d-flex justify-content-start">
+          <div class="button mr-3" @click="editingDish">
+            <div class="button-icon">
+              <i class="fas fa-pen"></i>
+            </div>
+            <span>edytuj</span>
+          </div>
+          <div class="button" @click="showDeleteDishModal">
+            <div class="button-icon">
+              <i class="fas fa-trash-alt"></i>
+            </div>
+            <span>usuń</span>
           </div>
         </div>
-        <!--buttons-->
-        <div class="row">
-          <div class="button mr-3" @click="editDish">
-            <i class="fas fa-pen"></i>
+        <div v-else class="row d-flex justify-content-start">
+          <div class="button mr-3" @click="confirmEditingDish">
+            <div class="button-icon">
+              <i class="fas fa-check"></i>
+            </div>
+            <span>akceptuj</span>
           </div>
-          <div class="button">
-            <i class="fas fa-trash-alt"></i>
-          </div>
-        </div>
-      </div>
 
-      <!--dish edited-->
-      <div v-else class="col-lg-5 mb-3 mb-lg-5 order-1">
-        <!--name-->
-        <div class="row">
-          <h6>Nazwa przepisu:</h6>
-        </div>
-        <div class="row edited">
-          <input
-            type="text"
-            v-model="dish.dish_name"
-            class="form-control custom-input"
-          />
-        </div>
-        <!--prep time-->
-        <div class="row mt-2">
-          <h6>Czas przygotowania (min):</h6>
-        </div>
-        <div class="row mb-2 edited">
-          <input
-            type="text"
-            v-model="dish.preparation_time"
-            class="form-control custom-input"
-          />
-        </div>
-        <!--image-->
-        <div class="row mt-2">
-          <h6>Zdjęcie (link):</h6>
-        </div>
-        <div class="row mb-2 edited">
-          <input
-            type="text"
-            v-model="dish.image"
-            class="form-control custom-input"
-          />
-        </div>
-        <!--rating-->
-        <div class="row mb-3" id="edit-stars">
-          <input
-            class="star-icon order-10"
-            id="star-5"
-            type="radio"
-            name="star"
-            value="5"
-            v-model="starValue"
-          />
-          <label class="star-icon order-9" for="star-5"></label>
-
-          <input
-            class="star-icon order-8"
-            id="star-4"
-            type="radio"
-            name="star"
-            value="4"
-            v-model="starValue"
-          />
-          <label class="star-icon order-7" for="star-4"></label>
-
-          <input
-            class="star-icon order-6"
-            id="star-3"
-            type="radio"
-            name="star"
-            value="3"
-            v-model="starValue"
-          />
-          <label class="star-icon order-5" for="star-3"></label>
-
-          <input
-            class="star-icon order-4"
-            id="star-2"
-            type="radio"
-            name="star"
-            value="2"
-            v-model="starValue"
-          />
-          <label class="star-icon order-3" for="star-2"></label>
-
-          <input
-            class="star-icon order-2"
-            id="star-1"
-            type="radio"
-            name="star"
-            value="1"
-            v-model="starValue"
-          />
-          <label class="star-icon order-1" for="star-1"></label>
-        </div>
-        <!--buttons-->
-        <div class="row">
-          <div class="button mr-3" @click="editDishAccept">
-            <i class="fas fa-check"></i>
-          </div>
-          <div class="button" @click="editDishCancel">
-            <i class="fas fa-times"></i>
+          <div class="button" @click="cancelEditingDish">
+            <div class="button-icon">
+              <i class="fas fa-times"></i>
+            </div>
+            <span>anuluj</span>
           </div>
         </div>
       </div>
     </div>
+
     <!--end of first row-->
 
     <div class="row">
-      <!--ingredients not edited-->
-      <div v-if="!isIngredientsEdited" class="col-lg-5">
-        <h2 class="mb-3">Składniki:</h2>
-        <div
-          class="row mb-3 ingredient-div"
-          v-for="ingredient in dishIngredients"
-          :key="ingredient.amount"
-        >
-          <div class="col-9 d-flex justify-content-start">
-            <p>{{ ingredient.ingredient_name }}</p>
-          </div>
-          <div class="col-3 d-flex justify-content-start">
-            <p>{{ ingredient.amount }} {{ ingredient.shortcut }}</p>
-          </div>
-        </div>
-        <!--button-->
-        <div class="row">
-          <div class="button mr-3" @click="editIngredients">
-            <i class="fas fa-pen"></i>
-          </div>
-        </div>
-      </div>
-
-      <!--ingredients edited-->
-      <div v-else class="col-lg-5">
-        <h2 class="mb-3">Składniki:</h2>
-        <div
-          class="row mb-3 ingredient-div"
-          v-for="ingredient in dishIngredients"
-          :key="ingredient.amount"
-        >
-          <div class="col-9 d-flex justify-content-start">
-            <p>{{ ingredient.ingredient_name }}</p>
-          </div>
-          <div class="col-3 d-flex justify-content-start">
-            <p>{{ ingredient.amount }} {{ ingredient.shortcut }}</p>
-          </div>
-        </div>
-        <!--buttons-->
-        <div class="row">
-          <div class="button mr-3" @click="editIngredientsAccept">
-            <i class="fas fa-check"></i>
-          </div>
-          <div class="button" @click="editIngredientsCancel">
-            <i class="fas fa-times"></i>
-          </div>
-        </div>
-      </div>
-
-      <!--steps not edited-->
-      <div v-if="!isStepsEdited" class="col-lg-7 mb-4">
-        <h2 class="mb-3">Przepis krok po kroku:</h2>
-        <div v-for="step in dishSteps" :key="step.step_number">
-          <div class="row d-flex justify-content-start">
-            <h5>Krok {{ step.step_number }}</h5>
-          </div>
-          <div class="row d-flex justify-content-start">
-            <p>{{ step.instructions }}</p>
-          </div>
-        </div>
-        <!--button-->
-        <div class="row">
-          <div class="button mr-3" @click="editSteps">
-            <i class="fas fa-pen"></i>
-          </div>
-        </div>
-      </div>
-
-      <!--steps edited-->
-      <div v-else class="col-lg-7 mb-4">
-        <h2 class="mb-3">Przepis krok po kroku:</h2>
-        <div v-for="step in dishSteps" :key="step.step_number">
-          <div class="row d-flex justify-content-start">
-            <h5>Krok {{ step.step_number }}</h5>
-          </div>
-          <div class="row d-flex justify-content-start">
-            <p>{{ step.instructions }}</p>
-          </div>
-          <!--buttons-->
+      <!--ingredients-->
+      <div class="col-lg-5 p-0">
+        <div class="ingredient-main-div">
           <div class="row">
-            <div class="button-small mr-3 mb-3" @click="showStepEditModal">
+            <h2 class="mb-4 mt-2">Składniki:</h2>
+          </div>
+          <div>
+            <div>
+              <transition-group name="list">
+                <div
+                  v-for="(ingredient, index) in dishIngredients"
+                  :key="index"
+                  class="dish-ingredients-list"
+                >
+                  <div class="row ingredient-div">
+                    <div
+                      class="col-9 p-0 d-flex justify-content-start align-items-end"
+                    >
+                      <p class="m-0 mr-2">{{ ingredient.ingredient_name }}</p>
+                      <transition
+                        name="slideEditIngredientButtons"
+                        mode="out-in"
+                      >
+                        <div
+                          v-if="isIngredientsEdited"
+                          class="row edit-ingredient-buttons-div"
+                        >
+                          <div
+                            class="button-small button-xxs"
+                            @click="
+                              showEditIngredientModal(
+                                ingredient.recipe_element_id
+                              )
+                            "
+                          >
+                            <i class="fas fa-pen"></i>
+                          </div>
+                          <div
+                            class="button-small button-xxs"
+                            @click="showDeleteIngredientModal(index)"
+                          >
+                            <i class="fas fa-trash-alt"></i>
+                          </div>
+                        </div>
+                      </transition>
+                    </div>
+                    <div
+                      class="col-3 p-0 d-flex justify-content-end align-items-end"
+                    >
+                      <p class="m-0">
+                        {{ ingredient.amount }} {{ ingredient.shortcut }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row" style="height:1.5rem"></div>
+                </div>
+              </transition-group>
+            </div>
+            <div class="row d-flex justify-content-start"></div>
+          </div>
+        </div>
+
+        <!--buttons-->
+        <div v-if="isIngredientsEdited" class="row mt-3 ml-3">
+          <div class="button mr-3 mb-3 mb-lg-0" @click="showAddIngredientModal">
+            <div class="button-icon">
+              <i class="fas fa-plus"></i>
+            </div>
+            <span>dodaj</span>
+          </div>
+          <div class="button mb-3 mb-lg-0" @click="cancelEditingAllIngredients">
+            <div class="button-icon">
+              <i class="fas fa-times"></i>
+            </div>
+            <span>anuluj</span>
+          </div>
+        </div>
+        <div v-else class="row mt-3 ml-3">
+          <div class="button mb-3 mb-lg-0" @click="editingAllIngredients">
+            <div class="button-icon">
               <i class="fas fa-pen"></i>
             </div>
-            <div class="button-small" @click="deleteStep">
-              <i class="fas fa-trash-alt"></i>
+            <span>edytuj</span>
+          </div>
+        </div>
+      </div>
+
+      <!--steps-->
+      <div class="col-lg-7 px-0 px-lg-3">
+        <div class="step-main-div">
+          <div class="row">
+            <h2 class="mb-4 mt-2">Krok po kroku:</h2>
+          </div>
+          <div>
+            <div>
+              <transition-group name="list">
+                <div
+                  v-for="(step, index) in dishSteps"
+                  :key="index"
+                  class="dish-steps-list"
+                >
+                  <div class="step-div">
+                    <div class="row d-flex justify-content-start">
+                      <p>Krok {{ step.step_number }}</p>
+                      <transition name="slideEditStepButtons" mode="out-in">
+                        <div v-if="isStepsEdited" class="edit-step-buttons-div">
+                          <div
+                            class="button-small button-xxs ml-2"
+                            @click="showEditStepModal(index)"
+                          >
+                            <i class="fas fa-pen"></i>
+                          </div>
+                          <div
+                            class="button-small button-xxs"
+                            @click="showDeleteStepModal(index)"
+                          >
+                            <i class="fas fa-trash-alt"></i>
+                          </div>
+                        </div>
+                      </transition>
+                    </div>
+                    <div class="row d-flex justify-content-start">
+                      <p class="mb-0">{{ step.instructions }}</p>
+                    </div>
+                  </div>
+                  <!--buttons-->
+                  <div class="row" style="height:1.5rem"></div>
+                </div>
+              </transition-group>
+            </div>
+            <div class="row d-flex justify-content-start"></div>
+          </div>
+        </div>
+
+        <!--buttons-->
+        <div v-if="isStepsEdited" class="row mt-3 ml-3">
+          <div class="button mr-3 mb-3 mb-lg-0" @click="showAddStepModal">
+            <div class="button-icon">
+              <i class="fas fa-plus"></i>
+            </div>
+            <span>dodaj</span>
+          </div>
+          <div class="button mb-3 mb-lg-0" @click="cancelEditingAllSteps">
+            <div class="button-icon">
+              <i class="fas fa-times"></i>
+            </div>
+            <span>anuluj</span>
+          </div>
+        </div>
+        <div v-else class="row mt-3 ml-3">
+          <div class="button mb-3 mb-lg-0" @click="editingAllSteps">
+            <div class="button-icon">
+              <i class="fas fa-pen"></i>
+            </div>
+            <span>edytuj</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--_____________________________________________________________modals___________________________________________________________________-->
+    <!--delete dish modal-->
+    <div v-if="deleteDishModal" class="overlay">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Usuń przepis
+            </h5>
+          </div>
+          <div class="modal-body ">
+            Czy na pewno chcesz usunąć przepis <b>{{ dish[0].dish_name }}</b> ?
+          </div>
+          <div class="modal-footer">
+            <div class="button mr-3" @click="deleteCurrentDish">
+              <div class="button-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <span>akceptuj</span>
+            </div>
+            <div class="button" @click="hideDeleteDishModal">
+              <div class="button-icon">
+                <i class="fas fa-times"></i>
+              </div>
+              <span>anuluj</span>
             </div>
           </div>
         </div>
-        <!--buttons-->
-        <div class="row">
-          <div class="button mr-3" @click="editStepsAccept">
-            <i class="fas fa-check"></i>
+      </div>
+    </div>
+
+    <!--edit step modal-->
+    <div v-if="editStepModal" class="overlay">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Zaktualizuj krok
+            </h5>
+            <div class="button-small" @click="hideEditStepModal">
+              <i class="fas fa-times"></i>
+            </div>
           </div>
-          <div class="button" @click="editStepsCancel">
-            <i class="fas fa-times"></i>
+          <div class="modal-body ">
+            <div
+              v-show="editingStepError && editingStepErrorAlert"
+              class="alert custom-alert alert-danger"
+              role="alert"
+              @click="hideAlert"
+            >
+              Nie udało się zaktualizować kroku!
+            </div>
+            <div class="row mt-1">
+              <h6>Numer kroku:</h6>
+            </div>
+            <input
+              type="number"
+              v-model="dishSteps[editedStepIndex].step_number"
+              class="form-control custom-input"
+            />
+            <div
+              v-show="
+                (dishSteps[editedStepIndex].step_number < 1 ||
+                  dishSteps[editedStepIndex].step_number > 99 ||
+                  dishSteps[editedStepIndex].step_number == '') &&
+                  editingStepError == true
+              "
+              class="alert custom-alert-small alert-danger"
+              role="alert"
+            >
+              Numer kroku musi być z przedziału od 1 do 99
+            </div>
+            <div class="row mt-1">
+              <h6>Instrukcje:</h6>
+            </div>
+            <div class="row">
+              <textarea
+                rows="5"
+                cols="60"
+                class="form-control custom-input"
+                name="instructions"
+                v-model="dishSteps[editedStepIndex].instructions"
+              ></textarea>
+              <div
+                v-show="
+                  dishSteps[editedStepIndex].instructions == '' &&
+                    editingStepError == true
+                "
+                class="alert custom-alert-small alert-danger"
+                role="alert"
+              >
+                Musisz podać instrukcje
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="button" @click="confirmEditingStep">
+              <div class="button-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <span>akceptuj</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--add step modal-->
+    <div v-if="addStepModal" class="overlay">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Dodaj krok
+            </h5>
+            <div class="button-small" @click="hideAddStepModal">
+              <i class="fas fa-times"></i>
+            </div>
+          </div>
+          <div class="modal-body ">
+            <div
+              v-show="addingStepError && addingStepErrorAlert"
+              class="alert custom-alert alert-danger"
+              role="alert"
+              @click="hideAlert"
+            >
+              Nie udało się dodać kroku!
+            </div>
+            <div class="row">
+              <div class="row mt-1">
+                <h6>Numer kroku:</h6>
+              </div>
+              <input
+                type="number"
+                v-model="newStep.step_number"
+                class="form-control custom-input"
+              />
+              <div
+                v-show="
+                  (newStep.step_number < 1 ||
+                    newStep.step_number > 99 ||
+                    newStep.step_number == '') &&
+                    addingStepError == true
+                "
+                class="alert custom-alert-small alert-danger"
+                role="alert"
+              >
+                Numer kroku musi być z przedziału od 1 do 99
+              </div>
+            </div>
+            <div class="row mt-1">
+              <h6>Instrukcje:</h6>
+            </div>
+            <div class="row">
+              <textarea
+                rows="5"
+                cols="60"
+                class="form-control custom-input"
+                name="instructions"
+                v-model="newStep.instructions"
+              ></textarea>
+              <div
+                v-show="newStep.instructions == '' && addingStepError == true"
+                class="alert custom-alert-small alert-danger"
+                role="alert"
+              >
+                Musisz podać instrukcje
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="button mr-3" @click="confirmAddingStep">
+              <div class="button-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <span>akceptuj</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--delete step modal-->
+    <div v-if="deleteStepModal" class="overlay">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Usuń krok
+            </h5>
+          </div>
+          <div class="modal-body">
+            Czy na pewno chcesz usunąć
+            <b>Krok {{ dishSteps[editedStepIndex].step_number }}</b> ?
+          </div>
+          <div class="modal-footer">
+            <div class="button mr-3" @click="confirmDeletingStep">
+              <div class="button-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <span>akceptuj</span>
+            </div>
+            <div class="button" @click="hideDeleteStepModal">
+              <div class="button-icon">
+                <i class="fas fa-times"></i>
+              </div>
+              <span>anuluj</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--edit ingredient modal-->
+    <div v-if="editIngredientModal" class="overlay">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Zaktualizuj składnik
+            </h5>
+            <div class="button-small" @click="hideEditIngredientModal">
+              <i class="fas fa-times"></i>
+            </div>
+          </div>
+          <div class="modal-body">
+            <div
+              v-show="editingIngredientError && editingIngredientErrorAlert"
+              class="alert custom-alert alert-danger"
+              role="alert"
+              @click="hideAlert"
+            >
+              Nie udało sie zaktualizować składnika!
+            </div>
+            <h6>Składnik:</h6>
+            <div class="input-group mb-3 mt-3">
+              <p class="mt-2 mr-4 ml-1 font-italic">
+                {{ editedIngredient.ingredient_name }}
+              </p>
+              <div
+                class="button select-button"
+                @click="showChooseIngredientModal"
+              >
+                <div class="button-icon">
+                  <i class="fas fa-list"></i>
+                </div>
+                <span>wybierz</span>
+              </div>
+            </div>
+            <h6>Ilość ({{ editedIngredient.unit_name }}):</h6>
+            <input
+              type="number"
+              class="form-control custom-input"
+              v-model="editedIngredient.amount"
+            />
+            <div
+              v-show="
+                (editedIngredient.amount < 1 ||
+                  editedIngredient.amount > 9999 ||
+                  editedIngredient.amount == '') &&
+                  editingIngredientError == true
+              "
+              class="alert custom-alert-small alert-danger mb-0"
+              role="alert"
+            >
+              Ilość składnika musi być z przedziału od 1 do 9999
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="button" @click="confirmEditingIngredient">
+              <div class="button-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <span>akceptuj</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--choose ingredient modal-->
+    <div v-if="chooseIngredientModal" class="overlay">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Wybierz składnik
+            </h5>
+            <div class="button-small" @click="hideChooseIngredientModal">
+              <i class="fas fa-times"></i>
+            </div>
+          </div>
+          <div class="modal-body">
+            <div
+              v-show="ingredientNotSelected"
+              class="alert custom-alert alert-danger"
+              role="alert"
+              @click="hideAlert"
+            >
+              Nie wybrano żadnego składnika!
+            </div>
+            <div class="row border-bottom">
+              <div class="col-8"><h6>Składnik:</h6></div>
+              <div class="col-4"><h6>Jednostka:</h6></div>
+            </div>
+            <div
+              class="row"
+              v-for="(ingredient, index) in ingredients"
+              :key="index"
+            >
+              <label class="choose-ingredient">
+                <input
+                  type="radio"
+                  name="ingredient"
+                  :value="ingredient.ingredient_id"
+                  v-model="chosenIngredientId"
+                  class="choose-ingredient-input"
+                />
+                <div class="py-2">
+                  <div class="row">
+                    <div class="col-8 ml-1">
+                      {{ ingredient.ingredient_name }}
+                    </div>
+                    <div class="col-3 ml-1">{{ ingredient.unit_name }}</div>
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="button" @click="confirmChoosingIngredient">
+              <div class="button-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <span>akceptuj</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--add ingredient modal-->
+    <div v-if="addIngredientModal" class="overlay">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Dodaj składnik
+            </h5>
+            <div class="button-small" @click="hideAddIngredientModal">
+              <i class="fas fa-times"></i>
+            </div>
+          </div>
+          <div class="modal-body">
+            <div
+              v-show="addingIngredientError && addingIngredientErrorAlert"
+              class="alert custom-alert alert-danger"
+              role="alert"
+              @click="hideAlert"
+            >
+              Nie udało się dodać składnika!
+            </div>
+            <h6>Wybierz składnik:</h6>
+            <div class="input-group mb-3 mt-3">
+              <p
+                v-if="newIngredient.ingredient_name != ''"
+                class="mt-2 mr-4 ml-1 font-italic"
+              >
+                {{ newIngredient.ingredient_name }}
+              </p>
+              <p v-else class="mt-2 mr-4 ml-1 font-italic">
+                nie wybrano...
+              </p>
+              <div class="button" @click="showNewIngredientModal">
+                <div class="button-icon">
+                  <i class="fas fa-list"></i>
+                </div>
+                <span>wybierz</span>
+              </div>
+            </div>
+            <h6>Ilość ({{ newIngredient.unit_name }}):</h6>
+            <input
+              type="number"
+              class="form-control custom-input"
+              v-model="newIngredient.amount"
+            />
+            <div
+              v-show="
+                (newIngredient.amount < 1 ||
+                  newIngredient.amount > 9999 ||
+                  newIngredient.amount == '') &&
+                  addingIngredientError == true
+              "
+              class="alert custom-alert-small alert-danger mb-0"
+              role="alert"
+            >
+              Ilość składnika musi być z przedziału od 1 do 9999
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="button" @click="confirmAddingIngredient">
+              <div class="button-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <span>akceptuj</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--choose new ingredient modal-->
+    <div v-if="newIngredientModal" class="overlay">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Wybierz nowy składnik
+            </h5>
+            <div class="button-small" @click="hideNewIngredientModal">
+              <i class="fas fa-times"></i>
+            </div>
+          </div>
+          <div class="modal-body">
+            <div
+              v-show="ingredientNotSelected"
+              class="alert custom-alert alert-danger"
+              role="alert"
+              @click="hideAlert"
+            >
+              Nie wybrano żadnego składnika!
+            </div>
+            <div class="row border-bottom">
+              <div class="col-8"><h6>Składnik:</h6></div>
+              <div class="col-4"><h6>Jednostka:</h6></div>
+            </div>
+            <div
+              class="row"
+              v-for="(ingredient, index) in ingredients"
+              :key="index"
+            >
+              <label class="choose-ingredient">
+                <input
+                  type="radio"
+                  name="ingredient"
+                  :value="ingredient.ingredient_id"
+                  v-model="chosenIngredientId"
+                  class="choose-ingredient-input"
+                />
+                <div class="py-2">
+                  <div class="row">
+                    <div class="col-8 ml-1">
+                      {{ ingredient.ingredient_name }}
+                    </div>
+                    <div class="col-3 ml-1">{{ ingredient.unit_name }}</div>
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="button" @click="confirmNewIngredient">
+              <div class="button-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <span>akceptuj</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--delete ingredient modal-->
+    <div v-if="deleteIngredientModal" class="overlay">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              Usuń składnik
+            </h5>
+          </div>
+          <div class="modal-body">
+            Czy na pewno chcesz usunąć
+            <b>
+              {{ dishIngredients[deletedIngredientIndex].ingredient_name }}</b
+            >
+            z listy składników ?
+          </div>
+          <div class="modal-footer">
+            <div class="button mr-3" @click="confirmDeletingIngredient">
+              <div class="button-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <span>akceptuj</span>
+            </div>
+            <div class="button" @click="hideDeleteIngredientModal">
+              <div class="button-icon">
+                <i class="fas fa-times"></i>
+              </div>
+              <span>anuluj</span>
+            </div>
           </div>
         </div>
       </div>
@@ -261,31 +931,101 @@ export default {
         image: "",
         preparation_time: "",
         rating: "",
+        portion: "",
       },
       dishSteps: {
         step_id: "",
-        instructions: "",
         step_number: "",
+        instructions: "",
       },
       dishIngredients: {
+        recipe_element_id: "",
         amount: "",
         ingredient_name: "",
+        ingredient_id: "",
         kcal_per_unit: "",
         shortcut: "",
         unit_name: "",
       },
+      ingredients: {
+        ingredient_id: "",
+        ingredient_name: "",
+        kcal_per_unit: "",
+        unit_name: "",
+      },
       params: { id: this.$route.params.id },
+      imgError: false,
       isDishEdited: false,
-      isIngredientsEdited: false,
-      isStepsEdited: false,
+      deleteDishModal: false,
       starValue: "",
+      data: { recipe_element_id: "" },
+
+      //alerts variables
+      editingDishErrorAlert: false,
+      editingIngredientErrorAlert: false,
+      addingIngredientErrorAlert: false,
+      editingStepErrorAlert: false,
+      addingStepErrorAlert: false,
+
+      ingredientNotSelected: false,
+      editingDishError: false,
+      editingIngredientError: false,
+      addingIngredientError: false,
+      editingStepError: false,
+      addingStepError: false,
+
+      //steps variables
+      isStepsEdited: false,
+      editStepModal: false,
+      editedStepIndex: "",
+      addStepModal: false,
+      newStep: {
+        step_id: "",
+        step_number: "",
+        instructions: "",
+        dish_id: "",
+      },
+      deleteStepModal: false,
+
+      //ingredients variables
+      isIngredientsEdited: false,
+      editIngredientModal: false,
+      chooseIngredientModal: false,
+      chosenIngredientId: "",
+      editedRecipeElementId: "",
+      formDataForUpdateIngredient: {
+        recipe_element_id: "",
+        ingredient_id: "",
+        amount: "",
+      },
+      editedIngredient: {
+        recipe_element_id: "",
+        amount: "",
+        ingredient_name: "",
+        ingredient_id: "",
+        kcal_per_unit: "",
+        shortcut: "",
+        unit_name: "",
+      },
+      addIngredientModal: false,
+      newIngredient: {
+        ingredient_name: "",
+        ingredient_id: "",
+        amount: "",
+        unit_name: "",
+        dish_id: "",
+      },
+      newIngredientModal: false,
+      deleteIngredientModal: false,
+      deletedIngredientIndex: "",
     };
   },
   mounted() {
     this.getCurrentDish();
+    this.getIngredients();
   },
   methods: {
-    //get current dish from database
+    //get current dish
     getCurrentDish() {
       var formData = this.toFormData(this.params);
       axios
@@ -299,12 +1039,13 @@ export default {
           } else {
             this.dish = response.data.dish;
             this.dishSteps = response.data.dish_steps;
+            this.dishSteps.sort((a, b) => a.step_number - b.step_number);
             this.dishIngredients = response.data.dish_ingredients;
           }
         });
     },
 
-    //update current dish in database
+    //update current dish
     updateCurrentDish() {
       this.dish[0].rating = this.starValue;
       var formData = this.toFormData(this.dish[0]);
@@ -316,12 +1057,168 @@ export default {
         .then((response) => {
           if (response.data.error) {
             this.errorMsg = response.data.message;
+            this.editingDishError = true;
+            this.editingDishErrorAlert = true;
+          } else {
+            this.getCurrentDish();
+            console.log(response.data);
+            this.editingDishError = false;
+            this.editingDishErrorAlert = false;
+          }
+        });
+    },
+
+    //delete current dish
+    deleteCurrentDish() {
+      var formData = this.toFormData(this.dish[0]);
+      axios
+        .post(
+          "http://localhost/food_tracker/process.php?action=delete_dish",
+          formData
+        )
+        .then((response) => {
+          if (response.data.error) {
+            this.errorMsg = response.data.message;
+          } else {
+            this.getCurrentDish();
+            console.log(response.data);
+            this.$router.push("/dishlist");
+          }
+        });
+    },
+
+    //update selected step
+    updateStep() {
+      var formData = this.toFormData(this.dishSteps[this.editedStepIndex]);
+      axios
+        .post(
+          "http://localhost/food_tracker/process.php?action=update_step",
+          formData
+        )
+        .then((response) => {
+          if (response.data.error) {
+            this.errorMsg = response.data.message;
           } else {
             this.getCurrentDish();
             console.log(response.data);
           }
         });
     },
+
+    //add new step
+    addNewStep() {
+      this.newStep.dish_id = this.dish[0].dish_id;
+      var formData = this.toFormData(this.newStep);
+      axios
+        .post(
+          "http://localhost/food_tracker/process.php?action=add_step",
+          formData
+        )
+        .then((response) => {
+          if (response.data.error) {
+            this.errorMsg = response.data.message;
+          } else {
+            this.getCurrentDish();
+            console.log(response.data);
+          }
+        });
+    },
+
+    //delete step
+    deleteStep(index) {
+      var formData = this.toFormData(this.dishSteps[index]);
+      axios
+        .post(
+          "http://localhost/food_tracker/process.php?action=delete_step",
+          formData
+        )
+        .then((response) => {
+          if (response.data.error) {
+            this.errorMsg = response.data.message;
+          } else {
+            this.getCurrentDish();
+            console.log(response.data);
+          }
+        });
+    },
+    // get all ingredinets
+    getIngredients() {
+      axios
+        .get("http://localhost/food_tracker/process.php?action=get_ingredients")
+        .then((response) => {
+          if (response.data.error) {
+            this.errorMsg = response.data.message;
+          } else {
+            this.ingredients = response.data.ingredients;
+          }
+        });
+    },
+    //update ingredient in recipe
+    updateIngredient() {
+      this.formDataForUpdateIngredient.recipe_element_id = this.editedIngredient.recipe_element_id;
+      this.formDataForUpdateIngredient.ingredient_id = this.editedIngredient.ingredient_id;
+      this.formDataForUpdateIngredient.amount = this.editedIngredient.amount;
+      var formData = this.toFormData(this.formDataForUpdateIngredient);
+      axios
+        .post(
+          "http://localhost/food_tracker/process.php?action=update_ingredient",
+          formData
+        )
+        .then((response) => {
+          if (response.data.error) {
+            this.errorMsg = response.data.message;
+            this.editingIngredientError = true;
+            this.editingIngredientErrorAlert = true;
+          } else {
+            this.getCurrentDish();
+            this.editingIngredientError = false;
+            this.editingIngredientErrorAlert = false;
+          }
+        });
+    },
+
+    //add new ingredient
+    addNewIngredient() {
+      this.newIngredient.dish_id = this.dish[0].dish_id;
+      var formData = this.toFormData(this.newIngredient);
+      axios
+        .post(
+          "http://localhost/food_tracker/process.php?action=add_ingredient",
+          formData
+        )
+        .then((response) => {
+          if (response.data.error) {
+            this.errorMsg = response.data.message;
+          } else {
+            this.getCurrentDish();
+            console.log(response.data);
+          }
+        });
+    },
+
+    //delete ingredient
+    deleteIngredient() {
+      var formData = this.toFormData(
+        (this.data = {
+          recipe_element_id: this.dishIngredients[this.deletedIngredientIndex]
+            .recipe_element_id,
+        })
+      );
+      axios
+        .post(
+          "http://localhost/food_tracker/process.php?action=delete_ingredient",
+          formData
+        )
+        .then((response) => {
+          if (response.data.error) {
+            this.errorMsg = response.data.message;
+          } else {
+            this.getCurrentDish();
+            console.log(response.data);
+          }
+        });
+    },
+
     toFormData(obj) {
       var fd = new FormData();
       for (var i in obj) {
@@ -330,170 +1227,334 @@ export default {
       return fd;
     },
 
-    //dish editing functions
-    editDish() {
+    //hide alert div on click
+    hideAlert() {
+      this.editingDishErrorAlert = false;
+      this.editingIngredientErrorAlert = false;
+      this.addingIngredientErrorAlert = false;
+      this.editingStepErrorAlert = false;
+      this.addingStepErrorAlert = false;
+      this.ingredientNotSelected = false;
+    },
+
+    //dish editing methods
+    editingDish() {
       this.isDishEdited = true;
       this.starValue = this.dish[0].rating;
+      this.isIngredientsEdited = false;
+      this.isStepsEdited = false;
     },
-    editDishAccept() {
-      this.isDishEdited = false;
-      this.updateCurrentDish();
+    confirmEditingDish() {
+      if (this.dish[0].dish_name == "") {
+        this.editingDishError = true;
+        this.editingDishErrorAlert = true;
+      } else if (
+        this.dish[0].preparation_time < 1 ||
+        this.dish[0].preparation_time > 999 ||
+        this.dish[0].preparation_time == ""
+      ) {
+        this.editingDishError = true;
+        this.editingDishErrorAlert = true;
+      } else if (
+        this.dish[0].portions < 1 ||
+        this.dish[0].portions > 99 ||
+        this.dish[0].portions == ""
+      ) {
+        this.editingDishError = true;
+        this.editingDishErrorAlert = true;
+      } else {
+        this.isDishEdited = false;
+        this.updateCurrentDish();
+        this.editingDishError = false;
+        this.editingDishErrorAlert = false;
+      }
     },
-    editDishCancel() {
+    cancelEditingDish() {
       this.isDishEdited = false;
+      this.editingDishError = false;
+      this.editingDishErrorAlert = false;
       this.getCurrentDish();
     },
+    showDeleteDishModal() {
+      this.deleteDishModal = true;
+    },
+    hideDeleteDishModal() {
+      this.deleteDishModal = false;
+    },
 
-    //ingredients editing functions
-    editIngredients() {
+    //ingredients editing methods
+    editingAllIngredients() {
       this.isIngredientsEdited = true;
+      this.isDishEdited = false;
+      this.isStepsEdited = false;
+      this.editingDishError = false;
+      this.editingDishErrorAlert = false;
+      this.getCurrentDish();
     },
-    editIngredientsAccept() {
+    confirmEditingAllIngredients() {
       this.isIngredientsEdited = false;
     },
-    editIngredientsCancel() {
+    cancelEditingAllIngredients() {
       this.isIngredientsEdited = false;
+    },
+    showEditIngredientModal(recipe_element_id) {
+      this.editIngredientModal = true;
+      this.editedRecipeElementId = recipe_element_id;
+
+      var ingredient = this.dishIngredients.find(
+        (ingredient) =>
+          ingredient.recipe_element_id === this.editedRecipeElementId
+      );
+      this.editedIngredient = ingredient;
+    },
+    hideEditIngredientModal() {
+      this.editIngredientModal = false;
+      this.editingIngredientError = false;
+      this.editingIngredientErrorAlert = false;
+      this.chosenIngredientId = "";
+      this.getCurrentDish();
+    },
+    showChooseIngredientModal() {
+      this.editIngredientModal = false;
+      this.chooseIngredientModal = true;
+      this.editingIngredientError = false;
+      this.editingIngredientErrorAlert = false;
+    },
+    hideChooseIngredientModal() {
+      this.editIngredientModal = true;
+      this.chooseIngredientModal = false;
+      this.ingredientNotSelected = false;
+    },
+    confirmChoosingIngredient() {
+      if (this.chosenIngredientId == "") {
+        this.ingredientNotSelected = true;
+      } else {
+        var ingredient = this.ingredients.find(
+          (ingredient) => ingredient.ingredient_id === this.chosenIngredientId
+        );
+        this.editedIngredient.ingredient_id = ingredient.ingredient_id;
+        this.editedIngredient.ingredient_name = ingredient.ingredient_name;
+        this.editedIngredient.unit_name = ingredient.unit_name;
+        this.chooseIngredientModal = false;
+        this.editIngredientModal = true;
+        this.ingredientNotSelected = false;
+      }
+    },
+    confirmEditingIngredient() {
+      if (
+        this.editedIngredient.amount < 1 ||
+        this.editedIngredient.amount > 9999 ||
+        this.editedIngredient.amount == ""
+      ) {
+        this.editingIngredientError = true;
+        this.editingIngredientErrorAlert = true;
+      } else {
+        this.updateIngredient();
+        this.editIngredientModal = false;
+        this.chosenIngredientId = "";
+        this.editingIngredientError = false;
+        this.editingIngredientErrorAlert = false;
+      }
+    },
+    //ingredient adding methods
+    showAddIngredientModal() {
+      this.addIngredientModal = true;
+    },
+    hideAddIngredientModal() {
+      this.addIngredientModal = false;
+      this.addingIngredientError = false;
+      this.addingIngredientErrorAlert = false;
+      this.chosenIngredientId = "";
+      this.newIngredient = {
+        ingredient_name: "",
+        ingredient_id: "",
+        amount: "",
+        unit_name: "",
+        dish_id: "",
+      };
+    },
+    confirmAddingIngredient() {
+      if (
+        this.newIngredient.amount < 1 ||
+        this.newIngredient.amount > 9999 ||
+        this.newIngredient.amount == ""
+      ) {
+        this.addingIngredientError = true;
+        this.addingIngredientErrorAlert = true;
+      } else if (this.newIngredient.ingredient_id == "") {
+        this.addingIngredientError = true;
+        this.addingIngredientErrorAlert = true;
+      } else {
+        this.addNewIngredient();
+        this.addIngredientModal = false;
+        this.chosenIngredientId = "";
+        this.newIngredient = {
+          ingredient_name: "",
+          ingredient_id: "",
+          amount: "",
+          unit_name: "",
+          dish_id: "",
+        };
+        this.addingIngredientError = false;
+        this.addingIngredientErrorAlert = false;
+      }
+    },
+    showNewIngredientModal() {
+      this.newIngredientModal = true;
+      this.addIngredientModal = false;
+      this.addingIngredientError = false;
+      this.addingIngredientErrorAlert = false;
+    },
+    hideNewIngredientModal() {
+      this.newIngredientModal = false;
+      this.addIngredientModal = true;
+      this.ingredientNotSelected = false;
+    },
+    confirmNewIngredient() {
+      if (this.chosenIngredientId == "") {
+        this.ingredientNotSelected = true;
+      } else {
+        var ingredient = this.ingredients.find(
+          (ingredient) => ingredient.ingredient_id === this.chosenIngredientId
+        );
+        this.newIngredient.ingredient_id = ingredient.ingredient_id;
+        this.newIngredient.ingredient_name = ingredient.ingredient_name;
+        this.newIngredient.unit_name = ingredient.unit_name;
+        this.newIngredientModal = false;
+        this.addIngredientModal = true;
+        this.ingredientNotSelected = false;
+      }
+    },
+    showDeleteIngredientModal(index) {
+      this.deleteIngredientModal = true;
+      this.deletedIngredientIndex = index;
+    },
+    hideDeleteIngredientModal() {
+      this.deleteIngredientModal = false;
+      this.deletedIngredientIndex = "";
+    },
+    confirmDeletingIngredient() {
+      this.deleteIngredientModal = false;
+      this.deleteIngredient();
+      this.deletedIngredientIndex = "";
     },
 
-    //steps editing functions
-    editSteps() {
+    //steps editing methods
+    editingAllSteps() {
       this.isStepsEdited = true;
+      this.isDishEdited = false;
+      this.isIngredientsEdited = false;
+      this.editingDishError = false;
+      this.editingDishErrorAlert = false;
+      this.getCurrentDish();
     },
-    editStepsAccept() {
+    cancelEditingAllSteps() {
       this.isStepsEdited = false;
     },
-    editStepsCancel() {
-      this.isStepsEdited = false;
+    showEditStepModal(index) {
+      this.editStepModal = true;
+      this.editedStepIndex = index;
+    },
+    hideEditStepModal() {
+      this.editStepModal = false;
+      this.getCurrentDish();
+      this.editingStepError = false;
+      this.editingStepErrorAlert = false;
+    },
+    confirmEditingStep() {
+      if (
+        this.dishSteps[this.editedStepIndex].step_number < 1 ||
+        this.dishSteps[this.editedStepIndex].step_number > 99 ||
+        this.dishSteps[this.editedStepIndex].step_number == ""
+      ) {
+        this.editingStepError = true;
+        this.editingStepErrorAlert = true;
+      } else if (this.dishSteps[this.editedStepIndex].instructions == "") {
+        this.editingStepError = true;
+        this.editingStepErrorAlert = true;
+      } else {
+        this.editStepModal = false;
+        this.updateStep();
+        this.editingStepError = false;
+        this.editingStepErrorAlert = false;
+      }
+    },
+    showAddStepModal() {
+      var i;
+      for (i = 0; i < this.dishSteps.length; i++) {
+        if (!(this.dishSteps[i].step_number == i + 1)) {
+          this.newStep.step_number = i + 1;
+          break;
+        }
+      }
+      if (this.dishSteps.length == i) {
+        this.newStep.step_number = i + 1;
+      }
+      this.addStepModal = true;
+    },
+    hideAddStepModal() {
+      this.addStepModal = false;
+      this.newStep = {
+        step_id: "",
+        step_number: "",
+        instructions: "",
+        dish_id: "",
+      };
+      this.addingStepError = false;
+      this.addingStepErrorAlert = false;
+    },
+    confirmAddingStep() {
+      if (
+        this.newStep.step_number < 1 ||
+        this.newStep.step_number > 99 ||
+        this.newStep.step_number == ""
+      ) {
+        this.addingStepError = true;
+        this.addingStepErrorAlert = true;
+      } else if (this.newStep.instructions == "") {
+        this.addingStepError = true;
+        this.addingStepErrorAlert = true;
+      } else {
+        this.addStepModal = false;
+        this.addNewStep();
+        this.newStep = {
+          step_id: "",
+          step_number: "",
+          instructions: "",
+          dish_id: "",
+        };
+        this.addingStepError = false;
+        this.addingStepErrorAlert = false;
+      }
+    },
+    showDeleteStepModal(index) {
+      this.deleteStepModal = true;
+      this.editedStepIndex = index;
+    },
+    hideDeleteStepModal() {
+      this.deleteStepModal = false;
+      this.editedStepIndex = "";
+    },
+    confirmDeletingStep() {
+      this.deleteStepModal = false;
+      this.deleteStep(this.editedStepIndex);
+      this.editedStepIndex = "";
     },
   },
-  computed: {
-    sortedSteps: function() {
-      function compare(a, b) {
-        if (a.step_number < b.step_number) return -1;
-        if (a.step_number > b.step_number) return 1;
-        return 0;
-      }
 
-      return this.dishSteps.slice().sort(compare);
+  computed: {
+    kcalSum: function() {
+      var kcal = 0;
+      if (this.dish.length > 0) {
+        for (var i = 0; i < this.dishIngredients.length; i++) {
+          kcal +=
+            parseFloat(this.dishIngredients[i].amount) *
+            parseFloat(this.dishIngredients[i].kcal_per_unit);
+        }
+        kcal = Math.round(kcal / parseInt(this.dish[0].portions));
+      }
+      return kcal;
     },
   },
 };
 </script>
-
-<style>
-#dish-image {
-  height: 400px;
-  width: 100%;
-  border: 1px solid #dddddd;
-  object-fit: cover;
-}
-#dish-name {
-  font-size: 35px;
-  font-weight: 600;
-  margin: 0;
-}
-#stars label {
-  font-size: 45px;
-  margin: 0;
-  margin-right: 10px;
-}
-#preptime span {
-  font-size: 40px;
-}
-#preptime p {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 600;
-}
-.button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 35px;
-  width: 50px;
-  height: 50px;
-  padding: 10px;
-  background-color: #dddddd;
-  cursor: pointer;
-}
-.button:hover {
-  background-color: #fff9c6;
-}
-.button:active {
-  transform: scale(0.8);
-}
-.button-small {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 15px;
-  width: 30px;
-  height: 30px;
-  padding: 10px;
-  background-color: #dddddd;
-  cursor: pointer;
-}
-.button-small:hover {
-  background-color: #fff9c6;
-}
-.button-small:active {
-  transform: scale(0.8);
-}
-#alt-image {
-  height: 400px;
-  width: 100%;
-  border: 1px solid #dddddd;
-  background-color: whitesmoke;
-  padding: 5% 20%;
-}
-.ingredient-div p {
-  font-weight: 400;
-  font-size: 18px;
-  margin: 0;
-}
-.ingredient-div {
-  border-bottom: 1px solid #dddddd;
-}
-input.star-icon {
-  display: none;
-}
-
-input.star-icon:checked ~ label.star-icon:before {
-  content: "\2605";
-  color: #ffcc00;
-  transition: all 0.3s;
-}
-#edit-stars label {
-  font-size: 45px;
-  margin: 0;
-  padding-right: 10px;
-  transition: all 0.3s;
-}
-#edit-stars label.star-icon:hover {
-  transform: scale(1.3);
-  color: #ffcc00;
-}
-#edit-stars label.star-icon:hover ~ label.star-icon:before {
-  transform: scale(1.3);
-  color: #ffcc00;
-}
-.edited .custom-input {
-  border: 1px solid #dddddd;
-  border-radius: 0;
-}
-.edited .custom-input:focus {
-  border: 1px solid #dddddd;
-  border-radius: 0;
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
-    0 0 6px rgba(255, 204, 0, 0.6);
-}
-
-@media (max-width: 992px) {
-  #dish-image {
-    height: auto;
-  }
-  #alt-image {
-    height: auto;
-  }
-}
-</style>
