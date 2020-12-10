@@ -1,367 +1,371 @@
 <template>
-  <div class="container-lg py-2 px-xl-4 py-lg-4 main-container">
-    <div class="main-add-div px-0 px-lg-4">
-      <div class="col">
-        <!--error alert-->
-        <div
-          v-if="addingDishErrorAlert"
-          class="alert custom-alert alert-danger"
-          role="alert"
-          @click="hideDishAlert"
-        >
-          Nie udało sie dodać przepisu!
+  <transition appear name="fadeIn">
+    <div class="container-lg py-2 px-xl-4 py-lg-4 ">
+      <div class="main-add-div px-0 px-lg-3">
+        <div class="col">
+          <!--error alert-->
+          <div
+            v-if="addingDishErrorAlert"
+            class="alert custom-alert alert-danger"
+            role="alert"
+            @click="hideDishAlert"
+          >
+            Nie udało sie dodać przepisu!
+          </div>
+          <!--success alert-->
+          <div
+            v-if="addingDishSuccessAlert"
+            class="alert custom-alert alert-success"
+            role="alert"
+            @click="hideDishAlert"
+          >
+            Udało sie dodać przepis!
+          </div>
         </div>
-        <!--success alert-->
-        <div
-          v-if="addingDishSuccessAlert"
-          class="alert custom-alert alert-success"
-          role="alert"
-          @click="hideDishAlert"
-        >
-          Udało sie dodać przepis!
-        </div>
-      </div>
 
-      <div class="row">
-        <!--new dish inputs-->
-        <div class="col-md-6">
-          <div class="row mb-3">
-            <h2>Wpisz dane przepisu</h2>
-          </div>
-          <div class="row">
-            <h6>Nazwa przepisu:</h6>
-          </div>
-          <div class="row">
-            <input
-              type="text"
-              v-model="newDish.dish_name"
-              class="form-control custom-input"
-            />
-          </div>
-          <div
-            v-show="newDish.dish_name == '' && addingDishError"
-            class="alert custom-alert-small alert-danger"
-            role="alert"
-          >
-            Nazwa przepisu nie może być pusta
-          </div>
-          <!--prep time-->
-          <div class="row mt-2">
-            <h6>Czas przygotowania (min):</h6>
-          </div>
-          <div class="row">
-            <input
-              type="number"
-              v-model="newDish.preparation_time"
-              class="form-control custom-input"
-            />
-          </div>
-          <div
-            v-show="
-              (newDish.preparation_time < 1 ||
-                newDish.preparation_time > 999 ||
-                newDish.preparation_time == '') &&
-                addingDishError
-            "
-            class="alert custom-alert-small alert-danger"
-            role="alert"
-          >
-            Czas przygotowania musi być z przedziału od 1 do 999
-          </div>
-          <!--portions-->
-          <div class="row mt-2">
-            <h6>Liczba porcji:</h6>
-          </div>
-          <div class="row">
-            <input
-              type="number"
-              v-model="newDish.portions"
-              class="form-control custom-input"
-            />
-          </div>
-          <div
-            v-show="
-              (newDish.portions < 1 ||
-                newDish.portions > 99 ||
-                newDish.portions == '') &&
-                addingDishError
-            "
-            class="alert custom-alert-small alert-danger"
-            role="alert"
-          >
-            Liczba porcji musi być z przedziału od 1 do 99
-          </div>
-          <!--image-->
-          <div class="row mt-2">
-            <h6>Zdjęcie (link):</h6>
-          </div>
-          <div class="row mb-2">
-            <input
-              type="url"
-              v-model="newDish.image"
-              class="form-control custom-input"
-            />
-          </div>
-          <!--rating-->
-          <div class="row mt-2">
-            <h6 style="margin-bottom:-10px">Ocena:</h6>
-          </div>
-          <div class="edit-stars">
-            <div class="row mb-1">
+        <div class="row">
+          <!--new dish inputs-->
+          <div class="col-md-6">
+            <div class="row mb-3">
+              <h2>Wpisz dane przepisu</h2>
+            </div>
+            <div class="row">
+              <h6>Nazwa przepisu:</h6>
+            </div>
+            <div class="row">
               <input
-                class="star-icon order-10"
-                id="star-5"
-                type="radio"
-                name="star"
-                value="5"
-                v-model="starValue"
+                type="text"
+                v-model="newDish.dish_name"
+                class="form-control custom-input"
               />
-              <label class="star-icon star-5 order-9" for="star-5"></label>
+            </div>
+            <div
+              v-show="newDish.dish_name == '' && addingDishError"
+              class="alert custom-alert-small alert-danger"
+              role="alert"
+            >
+              Nazwa przepisu nie może być pusta
+            </div>
+            <!--prep time-->
+            <div class="row mt-2">
+              <h6>Czas przygotowania (min):</h6>
+            </div>
+            <div class="row">
+              <input
+                type="number"
+                v-model="newDish.preparation_time"
+                class="form-control custom-input"
+              />
+            </div>
+            <div
+              v-show="
+                (newDish.preparation_time < 1 ||
+                  newDish.preparation_time > 999 ||
+                  newDish.preparation_time == '') &&
+                  addingDishError
+              "
+              class="alert custom-alert-small alert-danger"
+              role="alert"
+            >
+              Czas przygotowania musi być z przedziału od 1 do 999
+            </div>
+            <!--portions-->
+            <div class="row mt-2">
+              <h6>Liczba porcji:</h6>
+            </div>
+            <div class="row">
+              <input
+                type="number"
+                v-model="newDish.portions"
+                class="form-control custom-input"
+              />
+            </div>
+            <div
+              v-show="
+                (newDish.portions < 1 ||
+                  newDish.portions > 99 ||
+                  newDish.portions == '') &&
+                  addingDishError
+              "
+              class="alert custom-alert-small alert-danger"
+              role="alert"
+            >
+              Liczba porcji musi być z przedziału od 1 do 99
+            </div>
+            <!--image-->
+            <div class="row mt-2">
+              <h6>Zdjęcie (link):</h6>
+            </div>
+            <div class="row mb-2">
+              <input
+                type="url"
+                v-model="newDish.image"
+                class="form-control custom-input"
+              />
+            </div>
+            <!--rating-->
+            <div class="row mt-2">
+              <h6 style="margin-bottom:-10px">Ocena:</h6>
+            </div>
+            <div class="edit-stars">
+              <div class="row mb-1">
+                <input
+                  class="star-icon order-10"
+                  id="star-5"
+                  type="radio"
+                  name="star"
+                  value="5"
+                  v-model="starValue"
+                />
+                <label class="star-icon star-5 order-9" for="star-5"></label>
 
-              <input
-                class="star-icon order-8"
-                id="star-4"
-                type="radio"
-                name="star"
-                value="4"
-                v-model="starValue"
-              />
-              <label class="star-icon star-4 order-7" for="star-4"></label>
+                <input
+                  class="star-icon order-8"
+                  id="star-4"
+                  type="radio"
+                  name="star"
+                  value="4"
+                  v-model="starValue"
+                />
+                <label class="star-icon star-4 order-7" for="star-4"></label>
 
-              <input
-                class="star-icon order-6"
-                id="star-3"
-                type="radio"
-                name="star"
-                value="3"
-                v-model="starValue"
-              />
-              <label class="star-icon star-3 order-5" for="star-3"></label>
+                <input
+                  class="star-icon order-6"
+                  id="star-3"
+                  type="radio"
+                  name="star"
+                  value="3"
+                  v-model="starValue"
+                />
+                <label class="star-icon star-3 order-5" for="star-3"></label>
 
-              <input
-                class="star-icon order-4"
-                id="star-2"
-                type="radio"
-                name="star"
-                value="2"
-                v-model="starValue"
-              />
-              <label class="star-icon star-2 order-3" for="star-2"></label>
+                <input
+                  class="star-icon order-4"
+                  id="star-2"
+                  type="radio"
+                  name="star"
+                  value="2"
+                  v-model="starValue"
+                />
+                <label class="star-icon star-2 order-3" for="star-2"></label>
 
-              <input
-                class="star-icon order-2"
-                id="star-1"
-                type="radio"
-                name="star"
-                value="1"
-                v-model="starValue"
-              />
-              <label class="star-icon star-1 order-1" for="star-1"></label>
+                <input
+                  class="star-icon order-2"
+                  id="star-1"
+                  type="radio"
+                  name="star"
+                  value="1"
+                  v-model="starValue"
+                />
+                <label class="star-icon star-1 order-1" for="star-1"></label>
+              </div>
+            </div>
+          </div>
+          <!--ingredients-->
+          <div class="col-md-6">
+            <div class="row mb-3 mt-md-0 mt-4">
+              <h2>Podaj składniki</h2>
+            </div>
+            <transition-group name="list">
+              <div
+                v-for="(newIngredient, index) in newDishIngredients"
+                :key="index"
+                class="dish-ingredients-list"
+              >
+                <div class="row mb-2 ml-1 d-flex align-items-center">
+                  <h6
+                    v-if="newIngredient.ingredient_name != ''"
+                    class="m-0"
+                    style="font-weight: 600"
+                  >
+                    {{ newIngredient.ingredient_name }}
+                  </h6>
+                  <p v-else class="font-italic m-0">
+                    nie wybrano...
+                  </p>
+                  <div
+                    class="button-transparent ml-3"
+                    @click="showChooseIngredientModal(index)"
+                  >
+                    <i class="fas fa-list"></i>
+                  </div>
+                </div>
+                <div class="row mb-1">
+                  <div class="col p-0 d-flex align-items-center">
+                    <input
+                      type="number"
+                      class="form-control custom-input"
+                      v-model="newIngredient.amount"
+                      :placeholder="
+                        'Podaj ilość składnika w jednostce:  ' +
+                          newIngredient.unit_name
+                      "
+                    />
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div
+                    v-show="
+                      (newIngredient.amount < 1 ||
+                        newIngredient.amount > 9999 ||
+                        newIngredient.amount == '') &&
+                        addingDishError
+                    "
+                    class="alert custom-alert-small alert-danger m-0"
+                    role="alert"
+                  >
+                    Ilość składnika musi być z przedziału od 1 do 9999
+                  </div>
+                </div>
+              </div>
+            </transition-group>
+
+            <!--buttons-->
+            <div class="row mb-3 pt-1">
+              <div class="button mr-3" @click="addEmptyIngredient">
+                <div class="button-icon">
+                  <i class="fas fa-plus"></i>
+                </div>
+                <span>dodaj</span>
+              </div>
+              <div class="button" @click="deleteLastIngredient">
+                <div class="button-icon">
+                  <i class="fas fa-trash-alt"></i>
+                </div>
+                <span>usuń</span>
+              </div>
             </div>
           </div>
         </div>
-        <!--ingredients-->
-        <div class="col-md-6">
-          <div class="row mb-3 mt-md-0 mt-4">
-            <h2>Podaj składniki</h2>
+
+        <!--steps-->
+        <div class="px-3">
+          <div class="row mb-3 mt-4">
+            <h2>Przepis krok po kroku</h2>
           </div>
           <transition-group name="list">
             <div
-              v-for="(newIngredient, index) in newDishIngredients"
+              v-for="(newStep, index) in newDishSteps"
               :key="index"
-              class="dish-ingredients-list"
+              class="dish-steps-list"
             >
-              <div class="row mb-2 ml-1 d-flex align-items-center">
-                <h6
-                  v-if="newIngredient.ingredient_name != ''"
-                  class="m-0"
-                  style="font-weight: 600"
-                >
-                  {{ newIngredient.ingredient_name }}
-                </h6>
-                <p v-else class="font-italic m-0">
-                  nie wybrano...
-                </p>
-                <div
-                  class="button-transparent ml-3"
-                  @click="showChooseIngredientModal(index)"
-                >
-                  <i class="fas fa-list"></i>
-                </div>
+              <div class="row mt-3">
+                <h5 v-bind:stepNumber="(newStep.step_number = index + 1)">
+                  Krok {{ index + 1 }}
+                </h5>
               </div>
-              <div class="row mb-1">
-                <div class="col p-0 d-flex align-items-center">
-                  <input
-                    type="number"
-                    class="form-control custom-input"
-                    v-model="newIngredient.amount"
-                    :placeholder="
-                      'Podaj ilość składnika w jednostce:  ' +
-                        newIngredient.unit_name
-                    "
-                  />
-                </div>
+              <div class="row">
+                <textarea
+                  rows="1"
+                  cols="60"
+                  class="form-control custom-input"
+                  name="instructions"
+                  v-model="newStep.instructions"
+                  placeholder="Podaj instrukcje..."
+                ></textarea>
               </div>
               <div class="row mb-3">
                 <div
-                  v-show="
-                    (newIngredient.amount < 1 ||
-                      newIngredient.amount > 9999 ||
-                      newIngredient.amount == '') &&
-                      addingDishError
-                  "
+                  v-show="newStep.instructions == '' && addingDishError"
                   class="alert custom-alert-small alert-danger m-0"
                   role="alert"
                 >
-                  Ilość składnika musi być z przedziału od 1 do 9999
+                  Musisz podać instrukcje
                 </div>
               </div>
             </div>
           </transition-group>
-
-          <!--buttons-->
-          <div class="row mb-3 pt-1">
-            <div class="button mr-3" @click="addEmptyIngredient">
-              <div class="button-icon">
-                <i class="fas fa-plus"></i>
-              </div>
-              <span>dodaj</span>
+        </div>
+        <!--buttons-->
+        <div class="row pt-1 pb-3 px-3">
+          <div class="button mr-3" @click="addEmptyStep">
+            <div class="button-icon">
+              <i class="fas fa-plus"></i>
             </div>
-            <div class="button" @click="deleteLastIngredient">
-              <div class="button-icon">
-                <i class="fas fa-trash-alt"></i>
-              </div>
-              <span>usuń</span>
+            <span>dodaj</span>
+          </div>
+          <div class="button" @click="deleteLastStep">
+            <div class="button-icon">
+              <i class="fas fa-trash-alt"></i>
             </div>
+            <span>usuń</span>
           </div>
         </div>
       </div>
-
-      <!--steps-->
-      <div class="px-3">
-        <div class="row mb-3 mt-4">
-          <h2>Przepis krok po kroku</h2>
-        </div>
-        <transition-group name="list">
-          <div
-            v-for="(newStep, index) in newDishSteps"
-            :key="index"
-            class="dish-steps-list"
-          >
-            <div class="row mt-3">
-              <h5 v-bind:stepNumber="(newStep.step_number = index + 1)">
-                Krok {{ index + 1 }}
-              </h5>
-            </div>
-            <div class="row">
-              <textarea
-                rows="1"
-                cols="60"
-                class="form-control custom-input"
-                name="instructions"
-                v-model="newStep.instructions"
-                placeholder="Podaj instrukcje..."
-              ></textarea>
-            </div>
-            <div class="row mb-3">
-              <div
-                v-show="newStep.instructions == '' && addingDishError"
-                class="alert custom-alert-small alert-danger m-0"
-                role="alert"
-              >
-                Musisz podać instrukcje
-              </div>
-            </div>
-          </div>
-        </transition-group>
-      </div>
-      <!--buttons-->
-      <div class="row pt-1 pb-3 px-3">
-        <div class="button mr-3" @click="addEmptyStep">
+      <!-- buttons-->
+      <div class="row px-3">
+        <div class="button mt-4 ml-lg-3" @click="addAllDishElements">
           <div class="button-icon">
-            <i class="fas fa-plus"></i>
+            <i class="fas fa-check"></i>
           </div>
-          <span>dodaj</span>
-        </div>
-        <div class="button" @click="deleteLastStep">
-          <div class="button-icon">
-            <i class="fas fa-trash-alt"></i>
-          </div>
-          <span>usuń</span>
+          <span>akceptuj</span>
         </div>
       </div>
-    </div>
-    <!-- buttons-->
-    <div class="row px-3">
-      <div class="button mt-4" @click="addAllDishElements">
-        <div class="button-icon">
-          <i class="fas fa-check"></i>
-        </div>
-        <span>akceptuj</span>
-      </div>
-    </div>
 
-    <!--choose new ingredient modal-->
-    <div v-if="chooseIngredientModal" class="overlay">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Wybierz nowy składnik
-            </h5>
-            <div class="button-small" @click="hideChooseIngredientModal">
-              <i class="fas fa-times"></i>
-            </div>
-          </div>
-          <div class="modal-body">
-            <div
-              v-show="ingredientNotSelected"
-              class="alert custom-alert alert-danger"
-              role="alert"
-              @click="hideIngredientAlert"
-            >
-              Nie wybrano żadnego składnika!
-            </div>
-            <div class="row border-bottom">
-              <div class="col-8"><h6>Składnik:</h6></div>
-              <div class="col-4"><h6>Jednostka:</h6></div>
-            </div>
-            <div
-              class="row"
-              v-for="(ingredient, index) in ingredients"
-              :key="index"
-            >
-              <label class="choose-ingredient">
-                <input
-                  type="radio"
-                  name="ingredient"
-                  :value="ingredient.ingredient_id"
-                  v-model="chosenIngredientId"
-                  class="choose-ingredient-input"
-                />
-                <div class="py-2">
-                  <div class="row">
-                    <div class="col-8 ml-1">
-                      {{ ingredient.ingredient_name }}
-                    </div>
-                    <div class="col-3 ml-1">{{ ingredient.unit_name }}</div>
-                  </div>
+      <!--choose new ingredient modal-->
+      <transition name="modal">
+        <div v-if="chooseIngredientModal" class="overlay">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  Wybierz nowy składnik
+                </h5>
+                <div class="button-small" @click="hideChooseIngredientModal">
+                  <i class="fas fa-times"></i>
                 </div>
-              </label>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <div class="button" @click="confirmChoosingIngredient">
-              <div class="button-icon">
-                <i class="fas fa-check"></i>
               </div>
-              <span>akceptuj</span>
+              <div class="modal-body">
+                <div
+                  v-show="ingredientNotSelected"
+                  class="alert custom-alert alert-danger"
+                  role="alert"
+                  @click="hideIngredientAlert"
+                >
+                  Nie wybrano żadnego składnika!
+                </div>
+                <div class="row border-bottom">
+                  <div class="col-8"><h6>Składnik:</h6></div>
+                  <div class="col-4"><h6>Jednostka:</h6></div>
+                </div>
+                <div
+                  class="row"
+                  v-for="(ingredient, index) in ingredients"
+                  :key="index"
+                >
+                  <label class="choose-ingredient">
+                    <input
+                      type="radio"
+                      name="ingredient"
+                      :value="ingredient.ingredient_id"
+                      v-model="chosenIngredientId"
+                      class="choose-ingredient-input"
+                    />
+                    <div class="py-2">
+                      <div class="row">
+                        <div class="col-8 ml-1">
+                          {{ ingredient.ingredient_name }}
+                        </div>
+                        <div class="col-3 ml-1">{{ ingredient.unit_name }}</div>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="button" @click="confirmChoosingIngredient">
+                  <div class="button-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>akceptuj</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </transition>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -393,12 +397,7 @@ export default {
           dish_id: "",
         },
       ],
-      ingredients: {
-        ingredient_id: "",
-        ingredient_name: "",
-        kcal_per_unit: "",
-        unit_name: "",
-      },
+      ingredients: [],
       starValue: "1",
       addedId: "",
 
@@ -483,6 +482,9 @@ export default {
     },
 
     async addAllDishElements() {
+      var dishError = false;
+      var stepsError = false;
+      var ingredientsError = false;
       if (
         this.newDish.dish_name == "" ||
         this.newDish.preparation_time < 1 ||
@@ -492,11 +494,9 @@ export default {
         this.newDish.portions > 99 ||
         this.newDish.portions == ""
       ) {
-        this.addingDishError = true;
-        this.addingDishErrorAlert = true;
+        dishError = true;
       } else {
-        this.addingDishError = false;
-        this.addingDishErrorAlert = false;
+        dishError = false;
       }
 
       for (var k = 0; k < this.newDishIngredients.length; k++) {
@@ -506,21 +506,26 @@ export default {
           this.newDishIngredients[k].amount > 9999 ||
           this.newDishIngredients[k].amount == ""
         ) {
-          this.addingDishError = true;
-          this.addingDishErrorAlert = true;
+          ingredientsError = true;
         } else {
-          this.addingDishError = false;
-          this.addingDishErrorAlert = false;
+          ingredientsError = false;
         }
       }
       for (var l = 0; l < this.newDishSteps.length; l++) {
         if (this.newDishSteps[l].instructions == "") {
-          this.addingDishError = true;
-          this.addingDishErrorAlert = true;
+          stepsError = true;
         } else {
-          this.addingDishError = false;
-          this.addingDishErrorAlert = false;
+          stepsError = false;
         }
+      }
+
+      if (dishError || stepsError || ingredientsError) {
+        this.addingDishSuccessAlert = false;
+        this.addingDishError = true;
+        this.addingDishErrorAlert = true;
+      } else {
+        this.addingDishError = false;
+        this.addingDishErrorAlert = false;
       }
 
       if (!this.addingDishError) {

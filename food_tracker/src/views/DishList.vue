@@ -1,256 +1,245 @@
 <template>
-  <!--filters bar-->
-  <div class="container-fluid my-2 my-lg-4 px-lg-5">
-    <div id="filters-bar">
-      <div
-        class="button-transparent"
-        id="hide-filter-bar-button"
-        @click="hideFiltersBar"
-      >
-        <i class="fas fa-times"></i>
-      </div>
-      <div class="m-3 mt-5">
-        <!--prep time-->
-        <div class="row mb-2">
-          <h5 class="filters-header">Czas przygotowania:</h5>
-        </div>
-        <div class="row">
-          <label class="filter-dishes">
-            <input
-              type="checkbox"
-              value="1"
-              v-model="prepTimeFilter"
-              class="prep-time-input"
-            />
-            <span class="filters-checkmark"></span>
-            <p>&lt; 10 min.</p>
-          </label>
-        </div>
-        <div class="row">
-          <label class="filter-dishes">
-            <input
-              type="checkbox"
-              value="2"
-              v-model="prepTimeFilter"
-              class="prep-time-input"
-            />
-            <span class="filters-checkmark"></span>
-            <p>10 min. - 30 min.</p>
-          </label>
-        </div>
-        <div class="row">
-          <label class="filter-dishes">
-            <input
-              type="checkbox"
-              value="3"
-              v-model="prepTimeFilter"
-              class="prep-time-input"
-            />
-            <span class="filters-checkmark"></span>
-            <p>30 min. - 60 min.</p>
-          </label>
-        </div>
-        <div class="row">
-          <label class="filter-dishes">
-            <input
-              type="checkbox"
-              value="4"
-              v-model="prepTimeFilter"
-              class="prep-time-input"
-            />
-            <span class="filters-checkmark"></span>
-            <p>60 min. &lt;</p>
-          </label>
-        </div>
-        <!--portions-->
-        <div class="row mt-3 mb-2">
-          <h5 class="filters-header">Ilość porcji:</h5>
-        </div>
-        <div class="row">
-          <label class="filter-dishes">
-            <input type="checkbox" value="1" v-model="portionFilter" />
-            <span class="filters-checkmark"></span>
-            <p>1 os.</p>
-          </label>
-        </div>
-        <div class="row">
-          <label class="filter-dishes">
-            <input type="checkbox" value="2" v-model="portionFilter" />
-            <span class="filters-checkmark"></span>
-            <p>2 os.</p>
-          </label>
-        </div>
-        <div class="row">
-          <label class="filter-dishes">
-            <input type="checkbox" value="3" v-model="portionFilter" />
-            <span class="filters-checkmark"></span>
-            <p>3 os.</p>
-          </label>
-        </div>
-        <div class="row">
-          <label class="filter-dishes">
-            <input type="checkbox" value="4" v-model="portionFilter" />
-            <span class="filters-checkmark"></span>
-            <p>4 os.</p>
-          </label>
-        </div>
-        <div class="row">
-          <label class="filter-dishes">
-            <input type="checkbox" value="5" v-model="portionFilter" />
-            <span class="filters-checkmark"></span>
-            <p>4 os. &lt;</p>
-          </label>
-        </div>
-      </div>
-      <div class="button reset-filters-button" @click="resetFiltersValue">
-        <div class="button-icon">
-          <i class="fas fa-redo"></i>
-        </div>
-        <span>resetuj</span>
-      </div>
-    </div>
-    <!--search bar-->
-    <div id="search-bar">
-      <div
-        class="button-transparent"
-        id="hide-search-bar-button"
-        @click="hideSearchBar"
-      >
-        <i class="fas fa-times"></i>
-      </div>
-      <input
-        type="text"
-        class="form-control custom-input search-input"
-        placeholder="Wpisz nazwę przepisu"
-        v-model="search"
-      />
-    </div>
-    <!--buttons-->
-    <div class="filters-button" style="top:45%" @click="showSearchBar">
-      <div>
-        <i class="fa fa-search"></i>
-      </div>
-      <span>szukaj</span>
-    </div>
-    <div
-      class="filters-button"
-      style="top:50%; margin-top:20px"
-      @click="showFiltersBar"
-    >
-      <div>
-        <i class="fa fa-filter"></i>
-      </div>
-      <span>filtruj</span>
-    </div>
-    <div class="filters-button" style="top:55%; margin-top:40px">
-      <div>
-        <i class="fa fa-plus"></i>
-      </div>
-      <span>dodaj</span>
-    </div>
-
-    <!--header-->
-    <div class="row mb-2">
-      <div class="col-sm-6 order-sm-1 align-self-end">
-        <h2 class="header">PRZEPISY ({{ filteredSearchDishes.length }})</h2>
-      </div>
-    </div>
-    <div>
-      <transition-group name="list">
-        <!--add new dish-->
-        <div key="addDish" class="dish-div add-dish-div pt-3">
-          <router-link to="/adddish" class="routerlink">
-            <i class="fas fa-plus-circle dish-image" id="add-icon"></i>
-            <div class="row justify-content-center">
-              <p class="dish-name">Dodaj nowy przepis</p>
-            </div>
-          </router-link>
-        </div>
-
-        <!--list of dishes-->
+  <transition appear name="fadeIn">
+    <div class="container-fluid my-2 my-lg-4 px-lg-5">
+      <!--filters bar-->
+      <div id="filters-bar">
         <div
-          v-for="(dish, index) in filteredSearchDishes"
-          :key="index"
-          class="dish-div pt-3"
+          class="button-transparent"
+          id="hide-filter-bar-button"
+          @click="hideFiltersBar"
         >
-          <router-link
-            :to="{
-              name: 'DishDetails',
-              params: { id: dish.dish_id, name: dish.dish_name },
-            }"
-            class="routerlink"
+          <i class="fas fa-times"></i>
+        </div>
+        <div class="m-3 mt-5">
+          <!--prep time-->
+          <div class="row mb-2">
+            <h5 class="filters-header">Czas przygotowania:</h5>
+          </div>
+          <div class="row">
+            <label class="filter-dishes">
+              <input
+                type="checkbox"
+                value="1"
+                v-model="prepTimeFilter"
+                class="prep-time-input"
+              />
+              <span class="filters-checkmark"></span>
+              <p>&lt; 10 min.</p>
+            </label>
+          </div>
+          <div class="row">
+            <label class="filter-dishes">
+              <input
+                type="checkbox"
+                value="2"
+                v-model="prepTimeFilter"
+                class="prep-time-input"
+              />
+              <span class="filters-checkmark"></span>
+              <p>10 min. - 30 min.</p>
+            </label>
+          </div>
+          <div class="row">
+            <label class="filter-dishes">
+              <input
+                type="checkbox"
+                value="3"
+                v-model="prepTimeFilter"
+                class="prep-time-input"
+              />
+              <span class="filters-checkmark"></span>
+              <p>30 min. - 60 min.</p>
+            </label>
+          </div>
+          <div class="row">
+            <label class="filter-dishes">
+              <input
+                type="checkbox"
+                value="4"
+                v-model="prepTimeFilter"
+                class="prep-time-input"
+              />
+              <span class="filters-checkmark"></span>
+              <p>60 min. &lt;</p>
+            </label>
+          </div>
+          <!--portions-->
+          <div class="row mt-3 mb-2">
+            <h5 class="filters-header">Ilość porcji:</h5>
+          </div>
+          <div class="row">
+            <label class="filter-dishes">
+              <input type="checkbox" value="1" v-model="portionFilter" />
+              <span class="filters-checkmark"></span>
+              <p>1 os.</p>
+            </label>
+          </div>
+          <div class="row">
+            <label class="filter-dishes">
+              <input type="checkbox" value="2" v-model="portionFilter" />
+              <span class="filters-checkmark"></span>
+              <p>2 os.</p>
+            </label>
+          </div>
+          <div class="row">
+            <label class="filter-dishes">
+              <input type="checkbox" value="3" v-model="portionFilter" />
+              <span class="filters-checkmark"></span>
+              <p>3 os.</p>
+            </label>
+          </div>
+          <div class="row">
+            <label class="filter-dishes">
+              <input type="checkbox" value="4" v-model="portionFilter" />
+              <span class="filters-checkmark"></span>
+              <p>4 os.</p>
+            </label>
+          </div>
+          <div class="row">
+            <label class="filter-dishes">
+              <input type="checkbox" value="5" v-model="portionFilter" />
+              <span class="filters-checkmark"></span>
+              <p>4 os. &lt;</p>
+            </label>
+          </div>
+        </div>
+        <div class="button reset-filters-button" @click="resetFiltersValue">
+          <div class="button-icon">
+            <i class="fas fa-redo"></i>
+          </div>
+          <span>resetuj</span>
+        </div>
+      </div>
+      <!--search bar-->
+      <div id="search-bar">
+        <div
+          class="button-transparent"
+          id="hide-search-bar-button"
+          @click="hideSearchBar"
+        >
+          <i class="fas fa-times"></i>
+        </div>
+        <input
+          type="text"
+          class="form-control custom-input search-input"
+          placeholder="Wpisz nazwę przepisu"
+          v-model="search"
+        />
+      </div>
+      <!--filters buttons-->
+      <div class="filters-button" @click="showSearchBar">
+        <div>
+          <i class="fa fa-search"></i>
+        </div>
+        <span>szukaj</span>
+      </div>
+      <div class="filters-button" style="margin-top: 65px" @click="showFiltersBar">
+        <div>
+          <i class="fa fa-filter"></i>
+        </div>
+        <span>filtruj</span>
+      </div>
+      <div class="filters-button" style="margin-top: 130px" @click="redirectToAddNewDish">
+        <div>
+          <i class="fa fa-plus"></i>
+        </div>
+        <span>dodaj</span>
+      </div>
+
+      <!--header-->
+      <div class="row mb-2">
+        <div class="col-sm-6 order-sm-1 align-self-end">
+          <h2 class="header">PRZEPISY ({{ filteredSearchDishes.length }})</h2>
+        </div>
+      </div>
+      <div>
+        <transition-group name="list">
+          <!--list of dishes-->
+          <div
+            v-for="(dish, index) in filteredSearchDishes"
+            :key="index"
+            class="dish-div pt-3"
           >
-            <!--dish image-->
-            <div class="row justify-content-center">
-              <img
-                v-if="
-                  dish.image == '' ||
-                    dish.image == 'http://localhost:8080/img/logo.2c3c8bdd.png'
-                "
-                src="../assets/logo.png"
-                alt=""
-                class="dish-image alt-image"
-              />
-              <img
-                v-else
-                :src="dish.image"
-                class="dish-image"
-                @error="setAltImg(index)"
-                :id="index"
-              />
-            </div>
-            <!--dish name-->
-            <div class="row justify-content-center px-3">
-              <p class="dish-name ellipsis">{{ dish.dish_name }}</p>
-            </div>
-            <div class="row details mt-2">
-              <!-- rating -->
-              <div class="col-5 rating my-auto">
-                <div class="row d-flex justify-content-center">
-                  <div v-for="index in 5" :key="index">
-                    <label
-                      class="star-icon checked"
-                      v-if="dish.rating >= index"
-                    ></label>
-                    <label v-else class="star-icon"></label>
+            <router-link
+              :to="{
+                name: 'DishDetails',
+                params: { id: dish.dish_id, name: dish.dish_name },
+              }"
+              class="routerlink"
+            >
+              <!--dish image-->
+              <div class="row justify-content-center">
+                <img
+                  v-if="
+                    dish.image == '' ||
+                      dish.image ==
+                        'http://localhost:8080/img/logo.2c3c8bdd.png'
+                  "
+                  src="../assets/logo.png"
+                  alt=""
+                  class="dish-image alt-image"
+                />
+                <img
+                  v-else
+                  :src="dish.image"
+                  class="dish-image"
+                  @error="setAltImg(index)"
+                  :id="index"
+                />
+              </div>
+              <!--dish name-->
+              <div class="row justify-content-center px-3">
+                <p class="dish-name">{{ dish.dish_name }}</p>
+              </div>
+              <div class="row details mt-2">
+                <!-- rating -->
+                <div class="col-5 rating my-auto">
+                  <div class="row d-flex justify-content-center">
+                    <div v-for="index in 5" :key="index">
+                      <label
+                        class="star-icon checked"
+                        v-if="dish.rating >= index"
+                      ></label>
+                      <label v-else class="star-icon"></label>
+                    </div>
+                  </div>
+                </div>
+                <!-- preptime-->
+                <div class="col-4 preptime">
+                  <div
+                    class="row d-flex justify-content-center align-items-center"
+                  >
+                    <span class="fas fa-clock clock-icon"></span>
+                  </div>
+                  <div
+                    class="row d-flex justify-content-center align-items-center"
+                  >
+                    <p>{{ dish.preparation_time }} min.</p>
+                  </div>
+                </div>
+                <!--portions-->
+                <div class="col-3 portions">
+                  <div
+                    class="row d-flex justify-content-center align-items-center"
+                  >
+                    <span class="fas fa-user-friends people-icon"></span>
+                  </div>
+                  <div
+                    class="row d-flex justify-content-center align-items-center"
+                  >
+                    <p>{{ dish.portions }} os.</p>
                   </div>
                 </div>
               </div>
-              <!-- preptime-->
-              <div class="col-4 preptime">
-                <div
-                  class="row d-flex justify-content-center align-items-center"
-                >
-                  <span class="fas fa-clock clock-icon"></span>
-                </div>
-                <div
-                  class="row d-flex justify-content-center align-items-center"
-                >
-                  <p>{{ dish.preparation_time }} min.</p>
-                </div>
-              </div>
-              <!--portions-->
-              <div class="col-3 portions">
-                <div
-                  class="row d-flex justify-content-center align-items-center"
-                >
-                  <span class="fas fa-user-friends people-icon"></span>
-                </div>
-                <div
-                  class="row d-flex justify-content-center align-items-center"
-                >
-                  <p>{{ dish.portions }} os.</p>
-                </div>
-              </div>
-            </div>
-            <!---->
-          </router-link>
-        </div>
-      </transition-group>
+              <!---->
+            </router-link>
+          </div>
+        </transition-group>
 
-      <!---->
+        <!---->
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -321,6 +310,9 @@ export default {
       this.prepTimeFilter = [];
       this.portionFilter = [];
     },
+    redirectToAddNewDish() {
+      this.$router.push("/adddish");
+    },
   },
   computed: {
     filteredSearchDishes: function() {
@@ -371,7 +363,6 @@ export default {
                   return dish.portions > 4;
                 }
               });
-              console.log(dish.portions, portionBool);
             }
 
             var bool = (() => {

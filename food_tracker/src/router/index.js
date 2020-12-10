@@ -4,6 +4,7 @@ import DishList from "../views/DishList.vue";
 import DishDetails from "../views/DishDetails.vue";
 import IngredientList from "../views/IngredientList.vue";
 import AddDish from "../views/AddDish.vue";
+import Calendar from "../views/Calendar.vue";
 
 
 Vue.use(VueRouter);
@@ -29,6 +30,11 @@ const routes = [
     path: "/ingredientlist",
     name: "IngredientList",
     component: IngredientList,
+  },
+  {
+    path: "/calendar",
+    name: "Calendar",
+    component: Calendar,
   }
 
 ];

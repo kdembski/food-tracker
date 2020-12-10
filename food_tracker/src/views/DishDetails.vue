@@ -1,923 +1,966 @@
 <template>
-  <div class="container-xl py-2 px-xl-4 py-lg-4  main-container">
-    <!---->
-    <div class="row" v-for="(dish, index) in dish" :key="index">
-      <!--image-->
-      <div class="col-lg-7 px-0 px-lg-3 order-2 d-flex justify-content-end" id="image-div">
-        <img
-          v-if="!imgError"
-          :src="dish.image"
-          class="dish-image-xl"
-          @error="imgError = true"
-        />
-        <img
-          v-else
-          src="../assets/logo.png"
-          class="dish-image-xl alt-image-xl"
-        />
+  <transition appear name="fadeIn">
+    <div class="container-xl py-2 py-lg-4">
+      <!---->
+      <div class="row perspective" v-for="(dish, index) in dish" :key="index">
+        <!--image-->
+        <div
+          class="col-lg-7 p-0 order-2 d-flex justify-content-end"
+          id="image-div"
+        >
+          <img
+            v-if="!imgError"
+            :src="dish.image"
+            class="dish-image-xl"
+            @error="imgError = true"
+          />
+          <img
+            v-else
+            src="../assets/logo.png"
+            class="dish-image-xl alt-image-xl"
+          />
+        </div>
+          <transition name="slideDishDiv" mode="out-in">
+            <!--dish not edited-->
+            <div
+              v-if="!isDishEdited"
+              class="col-lg-5 order-1"
+              id="dish-div"
+              key="main"
+            >
+              <div>
+                <!--name-->
+                <div class="row mb-3">
+                  <p id="dish-name">{{ dish.dish_name }}</p>
+                </div>
+                <!--prep time-->
+                <div class="row mb-3" id="preptime">
+                  <span class="fas fa-clock"></span>
+                  <div class="col align-self-center">
+                    <p>{{ dish.preparation_time }} min.</p>
+                  </div>
+                </div>
+                <!--portions-->
+                <div class="row mb-3" id="portions">
+                  <span class="fas fa-user-friends"></span>
+                  <div class="col align-self-center">
+                    <p>{{ dish.portions }} os.</p>
+                  </div>
+                </div>
+                <!--kcal-->
+                <div class="row" id="kcal">
+                  <span class="fas fa-fire-alt"></span>
+                  <div class="col align-self-center">
+                    <p>{{ kcalSum }} kcal</p>
+                  </div>
+                </div>
+                <!--rating-->
+                <div class="row mb-1" id="stars">
+                  <div v-for="index in 5" :key="index">
+                    <label
+                      class="star-icon checked"
+                      v-if="dish.rating >= index"
+                    ></label>
+                    <label v-else class="star-icon"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--dish edited-->
+            <div v-else class="col-lg-5 order-1" id="dish-div" key="edit">
+              <transition name="input-list">
+                <div class="dish-input-list">
+                  <div
+                    v-show="editingDishError && editingDishErrorAlert"
+                    class="alert custom-alert alert-danger"
+                    role="alert"
+                    @click="hideAlert"
+                  >
+                    Nie udało sie zaktualizować przepisu!
+                  </div>
+
+                  <!--name-->
+                  <div class="row">
+                    <h6>Nazwa przepisu:</h6>
+                  </div>
+                  <div class="row">
+                    <input
+                      type="text"
+                      v-model="dish.dish_name"
+                      class="form-control custom-input"
+                    />
+                  </div>
+                  <div
+                    v-show="dish.dish_name == '' && editingDishError == true"
+                    class="alert custom-alert-small alert-danger"
+                    role="alert"
+                  >
+                    Nazwa przepisu nie może być pusta
+                  </div>
+                  <!--prep time-->
+                  <div class="row mt-2">
+                    <h6>Czas przygotowania (min):</h6>
+                  </div>
+                  <div class="row">
+                    <input
+                      type="number"
+                      v-model="dish.preparation_time"
+                      class="form-control custom-input"
+                    />
+                  </div>
+                  <div
+                    v-show="
+                      (dish.preparation_time < 1 ||
+                        dish.preparation_time > 999 ||
+                        dish.preparation_time == '') &&
+                        editingDishError == true
+                    "
+                    class="alert custom-alert-small alert-danger"
+                    role="alert"
+                  >
+                    Czas przygotowania musi być z przedziału od 1 do 999
+                  </div>
+                  <!--portions-->
+                  <div class="row mt-2">
+                    <h6>Liczba porcji:</h6>
+                  </div>
+                  <div class="row">
+                    <input
+                      type="number"
+                      v-model="dish.portions"
+                      class="form-control custom-input"
+                    />
+                  </div>
+                  <div
+                    v-show="
+                      (dish.portions < 1 ||
+                        dish.portions > 99 ||
+                        dish.portions == '') &&
+                        editingDishError == true
+                    "
+                    class="alert custom-alert-small alert-danger"
+                    role="alert"
+                  >
+                    Liczba porcji musi być z przedziału od 1 do 99
+                  </div>
+                  <!--image-->
+                  <div class="row mt-2">
+                    <h6>Zdjęcie (link):</h6>
+                  </div>
+                  <div class="row">
+                    <input
+                      type="url"
+                      v-model="dish.image"
+                      class="form-control custom-input"
+                    />
+                  </div>
+                  <!--rating-->
+                  <div class="row mt-2">
+                    <h6 style="margin-bottom:-10px">Ocena:</h6>
+                  </div>
+                  <div class="edit-stars">
+                    <div class="row mb-1">
+                      <input
+                        class="star-icon order-10"
+                        id="star-5"
+                        type="radio"
+                        name="star"
+                        value="5"
+                        v-model="starValue"
+                      />
+                      <label
+                        class="star-icon star-5 order-9"
+                        for="star-5"
+                      ></label>
+
+                      <input
+                        class="star-icon order-8"
+                        id="star-4"
+                        type="radio"
+                        name="star"
+                        value="4"
+                        v-model="starValue"
+                      />
+                      <label
+                        class="star-icon star-4 order-7"
+                        for="star-4"
+                      ></label>
+
+                      <input
+                        class="star-icon order-6"
+                        id="star-3"
+                        type="radio"
+                        name="star"
+                        value="3"
+                        v-model="starValue"
+                      />
+                      <label
+                        class="star-icon star-3 order-5"
+                        for="star-3"
+                      ></label>
+
+                      <input
+                        class="star-icon order-4"
+                        id="star-2"
+                        type="radio"
+                        name="star"
+                        value="2"
+                        v-model="starValue"
+                      />
+                      <label
+                        class="star-icon star-2 order-3"
+                        for="star-2"
+                      ></label>
+
+                      <input
+                        class="star-icon order-2"
+                        id="star-1"
+                        type="radio"
+                        name="star"
+                        value="1"
+                        v-model="starValue"
+                      />
+                      <label
+                        class="star-icon star-1 order-1"
+                        for="star-1"
+                      ></label>
+                    </div>
+                  </div>
+                </div>
+              </transition>
+            </div>
+          </transition>
       </div>
 
-      <transition name="slideDishDiv" mode="out-in">
-        <!--dish not edited-->
-        <div
-          v-if="!isDishEdited"
-          class="col-lg-5 order-1"
-          id="dish-div"
-          key="main"
-        >
-          <div>
-            <!--name-->
-            <div class="row mb-3">
-              <p id="dish-name">{{ dish.dish_name }}</p>
-            </div>
-            <!--prep time-->
-            <div class="row mb-3" id="preptime">
-              <span class="fas fa-clock"></span>
-              <div class="col align-self-center">
-                <p>{{ dish.preparation_time }} min.</p>
+      <!--buttons-->
+      <div class="row mt-3 mb-3 mb-lg-4 ">
+        <div class="col">
+          <div v-if="!isDishEdited" class="row d-flex justify-content-start">
+            <div class="button mr-3" @click="editingDish">
+              <div class="button-icon">
+                <i class="fas fa-pen"></i>
               </div>
+              <span>edytuj</span>
             </div>
-            <!--portions-->
-            <div class="row mb-3" id="portions">
-              <span class="fas fa-user-friends"></span>
-              <div class="col align-self-center">
-                <p>{{ dish.portions }} os.</p>
+            <div class="button" @click="showDeleteDishModal">
+              <div class="button-icon">
+                <i class="fas fa-trash-alt"></i>
               </div>
+              <span>usuń</span>
             </div>
-            <!--kcal-->
-            <div class="row" id="kcal">
-              <span class="fas fa-fire-alt"></span>
-              <div class="col align-self-center">
-                <p>{{ kcalSum }} kcal</p>
+          </div>
+          <div v-else class="row d-flex justify-content-start">
+            <div class="button mr-3" @click="confirmEditingDish">
+              <div class="button-icon">
+                <i class="fas fa-check"></i>
               </div>
+              <span>akceptuj</span>
             </div>
-            <!--rating-->
-            <div class="row mb-1" id="stars">
-              <div v-for="index in 5" :key="index">
-                <label
-                  class="star-icon checked"
-                  v-if="dish.rating >= index"
-                ></label>
-                <label v-else class="star-icon"></label>
+
+            <div class="button" @click="cancelEditingDish">
+              <div class="button-icon">
+                <i class="fas fa-times"></i>
+              </div>
+              <span>anuluj</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--end of first row-->
+
+      <div class="row">
+        <!--ingredients-->
+        <div class="col-lg-5 p-0">
+          <div class="ingredient-main-div">
+            <div class="row">
+              <h2 class="mb-4">Składniki:</h2>
+            </div>
+            <div>
+              <div>
+                <transition-group name="list">
+                  <div
+                    v-for="(ingredient, index) in dishIngredients"
+                    :key="index"
+                    class="dish-ingredients-list"
+                  >
+                    <div class="row ingredient-div">
+                      <div
+                        class="col-9 p-0 d-flex justify-content-start align-items-end"
+                      >
+                        <p class="m-0 mr-2">{{ ingredient.ingredient_name }}</p>
+                        <transition
+                          name="slideEditIngredientButtons"
+                          mode="out-in"
+                        >
+                          <div
+                            v-if="isIngredientsEdited"
+                            class="row edit-ingredient-buttons-div"
+                          >
+                            <div
+                              class="button-small button-xxs"
+                              @click="
+                                showEditIngredientModal(
+                                  ingredient.recipe_element_id
+                                )
+                              "
+                            >
+                              <i class="fas fa-pen"></i>
+                            </div>
+                            <div
+                              class="button-small button-xxs"
+                              @click="showDeleteIngredientModal(index)"
+                            >
+                              <i class="fas fa-trash-alt"></i>
+                            </div>
+                          </div>
+                        </transition>
+                      </div>
+                      <div
+                        class="col-3 p-0 d-flex justify-content-end align-items-end"
+                      >
+                        <p class="m-0">
+                          {{ ingredient.amount }} {{ ingredient.shortcut }}
+                        </p>
+                      </div>
+                    </div>
+                    <div class="row" style="height:1.5rem"></div>
+                  </div>
+                </transition-group>
+              </div>
+              <div class="row d-flex justify-content-start"></div>
+            </div>
+          </div>
+
+          <!--buttons-->
+          <div v-if="isIngredientsEdited" class="row mt-3 ml-3">
+            <div
+              class="button mr-3 mb-3 mb-lg-0"
+              @click="showAddIngredientModal"
+            >
+              <div class="button-icon">
+                <i class="fas fa-plus"></i>
+              </div>
+              <span>dodaj</span>
+            </div>
+            <div
+              class="button mb-3 mb-lg-0"
+              @click="cancelEditingAllIngredients"
+            >
+              <div class="button-icon">
+                <i class="fas fa-times"></i>
+              </div>
+              <span>anuluj</span>
+            </div>
+          </div>
+          <div v-else class="row mt-3 ml-3">
+            <div class="button mb-3 mb-lg-0" @click="editingAllIngredients">
+              <div class="button-icon">
+                <i class="fas fa-pen"></i>
+              </div>
+              <span>edytuj</span>
+            </div>
+          </div>
+        </div>
+
+        <!--steps-->
+        <div class="col-lg-7 p-0 pl-lg-3">
+          <div class="step-main-div">
+            <div class="row">
+              <h2 class="mb-4">Krok po kroku:</h2>
+            </div>
+            <div>
+              <div>
+                <transition-group name="list">
+                  <div
+                    v-for="(step, index) in dishSteps"
+                    :key="index"
+                    class="dish-steps-list"
+                  >
+                    <div class="step-div">
+                      <div class="row d-flex justify-content-start">
+                        <h5>Krok {{ step.step_number }}</h5>
+                        <transition name="slideEditStepButtons" mode="out-in">
+                          <div
+                            v-if="isStepsEdited"
+                            class="edit-step-buttons-div"
+                          >
+                            <div
+                              class="button-small button-xxs ml-2"
+                              @click="showEditStepModal(index)"
+                            >
+                              <i class="fas fa-pen"></i>
+                            </div>
+                            <div
+                              class="button-small button-xxs"
+                              @click="showDeleteStepModal(index)"
+                            >
+                              <i class="fas fa-trash-alt"></i>
+                            </div>
+                          </div>
+                        </transition>
+                      </div>
+                      <div class="row d-flex justify-content-start">
+                        <p class="mb-0">{{ step.instructions }}</p>
+                      </div>
+                    </div>
+                    <!--buttons-->
+                    <div class="row" style="height:1.5rem"></div>
+                  </div>
+                </transition-group>
+              </div>
+              <div class="row d-flex justify-content-start"></div>
+            </div>
+          </div>
+
+          <!--buttons-->
+          <div v-if="isStepsEdited" class="row mt-3 ml-3">
+            <div class="button mr-3 mb-3 mb-lg-0" @click="showAddStepModal">
+              <div class="button-icon">
+                <i class="fas fa-plus"></i>
+              </div>
+              <span>dodaj</span>
+            </div>
+            <div class="button mb-3 mb-lg-0" @click="cancelEditingAllSteps">
+              <div class="button-icon">
+                <i class="fas fa-times"></i>
+              </div>
+              <span>anuluj</span>
+            </div>
+          </div>
+          <div v-else class="row mt-3 ml-3">
+            <div class="button mb-3 mb-lg-0" @click="editingAllSteps">
+              <div class="button-icon">
+                <i class="fas fa-pen"></i>
+              </div>
+              <span>edytuj</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--_____________________________________________________________modals___________________________________________________________________-->
+      <!--delete dish modal-->
+      <transition name="modal">
+        <div v-if="deleteDishModal" class="overlay">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  Usuń przepis
+                </h5>
+              </div>
+              <div class="modal-body ">
+                Czy na pewno chcesz usunąć przepis
+                <b>{{ dish[0].dish_name }}</b> ?
+              </div>
+              <div class="modal-footer">
+                <div class="button mr-3" @click="deleteCurrentDish">
+                  <div class="button-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>akceptuj</span>
+                </div>
+                <div class="button" @click="hideDeleteDishModal">
+                  <div class="button-icon">
+                    <i class="fas fa-times"></i>
+                  </div>
+                  <span>anuluj</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <!--dish edited-->
-        <div v-else class="col-lg-5 order-1" id="dish-div" key="edit">
-          <transition name="input-list">
-            <div class="dish-input-list">
-              <div
-                v-show="editingDishError && editingDishErrorAlert"
-                class="alert custom-alert alert-danger"
-                role="alert"
-                @click="hideAlert"
-              >
-                Nie udało sie zaktualizować przepisu!
+      </transition>
+      <!--edit step modal-->
+      <transition name="modal">
+        <div v-if="editStepModal" class="overlay">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  Zaktualizuj krok
+                </h5>
+                <div class="button-small" @click="hideEditStepModal">
+                  <i class="fas fa-times"></i>
+                </div>
               </div>
-
-              <!--name-->
-              <div class="row">
-                <h6>Nazwa przepisu:</h6>
-              </div>
-              <div class="row">
-                <input
-                  type="text"
-                  v-model="dish.dish_name"
-                  class="form-control custom-input"
-                />
-              </div>
-              <div
-                v-show="dish.dish_name == '' && editingDishError == true"
-                class="alert custom-alert-small alert-danger"
-                role="alert"
-              >
-                Nazwa przepisu nie może być pusta
-              </div>
-              <!--prep time-->
-              <div class="row mt-2">
-                <h6>Czas przygotowania (min):</h6>
-              </div>
-              <div class="row">
+              <div class="modal-body ">
+                <div
+                  v-show="editingStepError && editingStepErrorAlert"
+                  class="alert custom-alert alert-danger"
+                  role="alert"
+                  @click="hideAlert"
+                >
+                  Nie udało się zaktualizować kroku!
+                </div>
+                <div class="row mt-1">
+                  <h6>Numer kroku:</h6>
+                </div>
                 <input
                   type="number"
-                  v-model="dish.preparation_time"
+                  v-model="dishSteps[editedStepIndex].step_number"
                   class="form-control custom-input"
                 />
+                <div
+                  v-show="
+                    (dishSteps[editedStepIndex].step_number < 1 ||
+                      dishSteps[editedStepIndex].step_number > 99 ||
+                      dishSteps[editedStepIndex].step_number == '') &&
+                      editingStepError == true
+                  "
+                  class="alert custom-alert-small alert-danger"
+                  role="alert"
+                >
+                  Numer kroku musi być z przedziału od 1 do 99
+                </div>
+                <div class="row mt-1">
+                  <h6>Instrukcje:</h6>
+                </div>
+                <div class="row">
+                  <textarea
+                    rows="5"
+                    cols="60"
+                    class="form-control custom-input"
+                    name="instructions"
+                    v-model="dishSteps[editedStepIndex].instructions"
+                  ></textarea>
+                  <div
+                    v-show="
+                      dishSteps[editedStepIndex].instructions == '' &&
+                        editingStepError == true
+                    "
+                    class="alert custom-alert-small alert-danger"
+                    role="alert"
+                  >
+                    Musisz podać instrukcje
+                  </div>
+                </div>
               </div>
-              <div
-                v-show="
-                  (dish.preparation_time < 1 ||
-                    dish.preparation_time > 999 ||
-                    dish.preparation_time == '') &&
-                    editingDishError == true
-                "
-                class="alert custom-alert-small alert-danger"
-                role="alert"
-              >
-                Czas przygotowania musi być z przedziału od 1 do 999
-              </div>
-              <!--portions-->
-              <div class="row mt-2">
-                <h6>Liczba porcji:</h6>
-              </div>
-              <div class="row">
-                <input
-                  type="number"
-                  v-model="dish.portions"
-                  class="form-control custom-input"
-                />
-              </div>
-              <div
-                v-show="
-                  (dish.portions < 1 ||
-                    dish.portions > 99 ||
-                    dish.portions == '') &&
-                    editingDishError == true
-                "
-                class="alert custom-alert-small alert-danger"
-                role="alert"
-              >
-                Liczba porcji musi być z przedziału od 1 do 99
-              </div>
-              <!--image-->
-              <div class="row mt-2">
-                <h6>Zdjęcie (link):</h6>
-              </div>
-              <div class="row">
-                <input
-                  type="url"
-                  v-model="dish.image"
-                  class="form-control custom-input"
-                />
-              </div>
-              <!--rating-->
-              <div class="row mt-2">
-                <h6 style="margin-bottom:-10px">Ocena:</h6>
-              </div>
-              <div class="edit-stars">
-                <div class="row mb-1">
-                  <input
-                    class="star-icon order-10"
-                    id="star-5"
-                    type="radio"
-                    name="star"
-                    value="5"
-                    v-model="starValue"
-                  />
-                  <label class="star-icon star-5 order-9" for="star-5"></label>
-
-                  <input
-                    class="star-icon order-8"
-                    id="star-4"
-                    type="radio"
-                    name="star"
-                    value="4"
-                    v-model="starValue"
-                  />
-                  <label class="star-icon star-4 order-7" for="star-4"></label>
-
-                  <input
-                    class="star-icon order-6"
-                    id="star-3"
-                    type="radio"
-                    name="star"
-                    value="3"
-                    v-model="starValue"
-                  />
-                  <label class="star-icon star-3 order-5" for="star-3"></label>
-
-                  <input
-                    class="star-icon order-4"
-                    id="star-2"
-                    type="radio"
-                    name="star"
-                    value="2"
-                    v-model="starValue"
-                  />
-                  <label class="star-icon star-2 order-3" for="star-2"></label>
-
-                  <input
-                    class="star-icon order-2"
-                    id="star-1"
-                    type="radio"
-                    name="star"
-                    value="1"
-                    v-model="starValue"
-                  />
-                  <label class="star-icon star-1 order-1" for="star-1"></label>
+              <div class="modal-footer">
+                <div class="button" @click="confirmEditingStep">
+                  <div class="button-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>akceptuj</span>
                 </div>
               </div>
             </div>
-          </transition>
+          </div>
+        </div>
+      </transition>
+      <!--add step modal-->
+      <transition name="modal">
+        <div v-if="addStepModal" class="overlay">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  Dodaj krok
+                </h5>
+                <div class="button-small" @click="hideAddStepModal">
+                  <i class="fas fa-times"></i>
+                </div>
+              </div>
+              <div class="modal-body ">
+                <div
+                  v-show="addingStepError && addingStepErrorAlert"
+                  class="alert custom-alert alert-danger"
+                  role="alert"
+                  @click="hideAlert"
+                >
+                  Nie udało się dodać kroku!
+                </div>
+                <div class="row">
+                  <div class="row mt-1">
+                    <h6>Numer kroku:</h6>
+                  </div>
+                  <input
+                    type="number"
+                    v-model="newStep.step_number"
+                    class="form-control custom-input"
+                  />
+                  <div
+                    v-show="
+                      (newStep.step_number < 1 ||
+                        newStep.step_number > 99 ||
+                        newStep.step_number == '') &&
+                        addingStepError == true
+                    "
+                    class="alert custom-alert-small alert-danger"
+                    role="alert"
+                  >
+                    Numer kroku musi być z przedziału od 1 do 99
+                  </div>
+                </div>
+                <div class="row mt-1">
+                  <h6>Instrukcje:</h6>
+                </div>
+                <div class="row">
+                  <textarea
+                    rows="5"
+                    cols="60"
+                    class="form-control custom-input"
+                    name="instructions"
+                    v-model="newStep.instructions"
+                  ></textarea>
+                  <div
+                    v-show="
+                      newStep.instructions == '' && addingStepError == true
+                    "
+                    class="alert custom-alert-small alert-danger"
+                    role="alert"
+                  >
+                    Musisz podać instrukcje
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="button mr-3" @click="confirmAddingStep">
+                  <div class="button-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>akceptuj</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+      <!--delete step modal-->
+      <transition name="modal">
+        <div v-if="deleteStepModal" class="overlay">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  Usuń krok
+                </h5>
+              </div>
+              <div class="modal-body">
+                Czy na pewno chcesz usunąć
+                <b>Krok {{ dishSteps[editedStepIndex].step_number }}</b> ?
+              </div>
+              <div class="modal-footer">
+                <div class="button mr-3" @click="confirmDeletingStep">
+                  <div class="button-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>akceptuj</span>
+                </div>
+                <div class="button" @click="hideDeleteStepModal">
+                  <div class="button-icon">
+                    <i class="fas fa-times"></i>
+                  </div>
+                  <span>anuluj</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+      <!--edit ingredient modal-->
+      <transition name="modal">
+        <div v-if="editIngredientModal" class="overlay">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  Zaktualizuj składnik
+                </h5>
+                <div class="button-small" @click="hideEditIngredientModal">
+                  <i class="fas fa-times"></i>
+                </div>
+              </div>
+              <div class="modal-body">
+                <div
+                  v-show="editingIngredientError && editingIngredientErrorAlert"
+                  class="alert custom-alert alert-danger"
+                  role="alert"
+                  @click="hideAlert"
+                >
+                  Nie udało sie zaktualizować składnika!
+                </div>
+                <h6>Składnik:</h6>
+                <div class="input-group mb-3 mt-3">
+                  <p class="mt-2 mr-4 ml-1 font-italic">
+                    {{ editedIngredient.ingredient_name }}
+                  </p>
+                  <div
+                    class="button select-button"
+                    @click="showChooseIngredientModal"
+                  >
+                    <div class="button-icon">
+                      <i class="fas fa-list"></i>
+                    </div>
+                    <span>wybierz</span>
+                  </div>
+                </div>
+                <h6>Ilość ({{ editedIngredient.unit_name }}):</h6>
+                <input
+                  type="number"
+                  class="form-control custom-input"
+                  v-model="editedIngredient.amount"
+                />
+                <div
+                  v-show="
+                    (editedIngredient.amount < 1 ||
+                      editedIngredient.amount > 9999 ||
+                      editedIngredient.amount == '') &&
+                      editingIngredientError == true
+                  "
+                  class="alert custom-alert-small alert-danger mb-0"
+                  role="alert"
+                >
+                  Ilość składnika musi być z przedziału od 1 do 9999
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="button" @click="confirmEditingIngredient">
+                  <div class="button-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>akceptuj</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+      <!--choose ingredient modal-->
+      <transition name="modal">
+        <div v-if="chooseIngredientModal" class="overlay">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  Wybierz składnik
+                </h5>
+                <div class="button-small" @click="hideChooseIngredientModal">
+                  <i class="fas fa-times"></i>
+                </div>
+              </div>
+              <div class="modal-body">
+                <div
+                  v-show="ingredientNotSelected"
+                  class="alert custom-alert alert-danger"
+                  role="alert"
+                  @click="hideAlert"
+                >
+                  Nie wybrano żadnego składnika!
+                </div>
+                <div class="row border-bottom">
+                  <div class="col-8"><h6>Składnik:</h6></div>
+                  <div class="col-4"><h6>Jednostka:</h6></div>
+                </div>
+                <div
+                  class="row"
+                  v-for="(ingredient, index) in ingredients"
+                  :key="index"
+                >
+                  <label class="choose-ingredient">
+                    <input
+                      type="radio"
+                      name="ingredient"
+                      :value="ingredient.ingredient_id"
+                      v-model="chosenIngredientId"
+                      class="choose-ingredient-input"
+                    />
+                    <div class="py-2">
+                      <div class="row">
+                        <div class="col-8 ml-1">
+                          {{ ingredient.ingredient_name }}
+                        </div>
+                        <div class="col-3 ml-1">{{ ingredient.unit_name }}</div>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="button" @click="confirmChoosingIngredient">
+                  <div class="button-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>akceptuj</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+      <!--add ingredient modal-->
+      <transition name="modal">
+        <div v-if="addIngredientModal" class="overlay">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  Dodaj składnik
+                </h5>
+                <div class="button-small" @click="hideAddIngredientModal">
+                  <i class="fas fa-times"></i>
+                </div>
+              </div>
+              <div class="modal-body">
+                <div
+                  v-show="addingIngredientError && addingIngredientErrorAlert"
+                  class="alert custom-alert alert-danger"
+                  role="alert"
+                  @click="hideAlert"
+                >
+                  Nie udało się dodać składnika!
+                </div>
+                <h6>Wybierz składnik:</h6>
+                <div class="input-group mb-3 mt-3">
+                  <p
+                    v-if="newIngredient.ingredient_name != ''"
+                    class="mt-2 mr-4 ml-1 font-italic"
+                  >
+                    {{ newIngredient.ingredient_name }}
+                  </p>
+                  <p v-else class="mt-2 mr-4 ml-1 font-italic">
+                    nie wybrano...
+                  </p>
+                  <div class="button" @click="showNewIngredientModal">
+                    <div class="button-icon">
+                      <i class="fas fa-list"></i>
+                    </div>
+                    <span>wybierz</span>
+                  </div>
+                </div>
+                <h6>Ilość ({{ newIngredient.unit_name }}):</h6>
+                <input
+                  type="number"
+                  class="form-control custom-input"
+                  v-model="newIngredient.amount"
+                />
+                <div
+                  v-show="
+                    (newIngredient.amount < 1 ||
+                      newIngredient.amount > 9999 ||
+                      newIngredient.amount == '') &&
+                      addingIngredientError == true
+                  "
+                  class="alert custom-alert-small alert-danger mb-0"
+                  role="alert"
+                >
+                  Ilość składnika musi być z przedziału od 1 do 9999
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="button" @click="confirmAddingIngredient">
+                  <div class="button-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>akceptuj</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+      <!--choose new ingredient modal-->
+      <transition name="modal">
+        <div v-if="newIngredientModal" class="overlay">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  Wybierz nowy składnik
+                </h5>
+                <div class="button-small" @click="hideNewIngredientModal">
+                  <i class="fas fa-times"></i>
+                </div>
+              </div>
+              <div class="modal-body">
+                <div
+                  v-show="ingredientNotSelected"
+                  class="alert custom-alert alert-danger"
+                  role="alert"
+                  @click="hideAlert"
+                >
+                  Nie wybrano żadnego składnika!
+                </div>
+                <div class="row border-bottom">
+                  <div class="col-8"><h6>Składnik:</h6></div>
+                  <div class="col-4"><h6>Jednostka:</h6></div>
+                </div>
+                <div
+                  class="row"
+                  v-for="(ingredient, index) in ingredients"
+                  :key="index"
+                >
+                  <label class="choose-ingredient">
+                    <input
+                      type="radio"
+                      name="ingredient"
+                      :value="ingredient.ingredient_id"
+                      v-model="chosenIngredientId"
+                      class="choose-ingredient-input"
+                    />
+                    <div class="py-2">
+                      <div class="row">
+                        <div class="col-8 ml-1">
+                          {{ ingredient.ingredient_name }}
+                        </div>
+                        <div class="col-3 ml-1">{{ ingredient.unit_name }}</div>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div class="button" @click="confirmNewIngredient">
+                  <div class="button-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>akceptuj</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+      <!--delete ingredient modal-->
+      <transition name="modal">
+        <div v-if="deleteIngredientModal" class="overlay">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  Usuń składnik
+                </h5>
+              </div>
+              <div class="modal-body">
+                Czy na pewno chcesz usunąć
+                <b>
+                  {{
+                    dishIngredients[deletedIngredientIndex].ingredient_name
+                  }}</b
+                >
+                z listy składników ?
+              </div>
+              <div class="modal-footer">
+                <div class="button mr-3" @click="confirmDeletingIngredient">
+                  <div class="button-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <span>akceptuj</span>
+                </div>
+                <div class="button" @click="hideDeleteIngredientModal">
+                  <div class="button-icon">
+                    <i class="fas fa-times"></i>
+                  </div>
+                  <span>anuluj</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </transition>
     </div>
-
-    <!--buttons-->
-    <div class="row mt-3 mb-3 mb-lg-5 ">
-      <div class="col">
-        <div v-if="!isDishEdited" class="row d-flex justify-content-start">
-          <div class="button mr-3" @click="editingDish">
-            <div class="button-icon">
-              <i class="fas fa-pen"></i>
-            </div>
-            <span>edytuj</span>
-          </div>
-          <div class="button" @click="showDeleteDishModal">
-            <div class="button-icon">
-              <i class="fas fa-trash-alt"></i>
-            </div>
-            <span>usuń</span>
-          </div>
-        </div>
-        <div v-else class="row d-flex justify-content-start">
-          <div class="button mr-3" @click="confirmEditingDish">
-            <div class="button-icon">
-              <i class="fas fa-check"></i>
-            </div>
-            <span>akceptuj</span>
-          </div>
-
-          <div class="button" @click="cancelEditingDish">
-            <div class="button-icon">
-              <i class="fas fa-times"></i>
-            </div>
-            <span>anuluj</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--end of first row-->
-
-    <div class="row">
-      <!--ingredients-->
-      <div class="col-lg-5 p-0">
-        <div class="ingredient-main-div">
-          <div class="row">
-            <h2 class="mb-4 mt-2">Składniki:</h2>
-          </div>
-          <div>
-            <div>
-              <transition-group name="list">
-                <div
-                  v-for="(ingredient, index) in dishIngredients"
-                  :key="index"
-                  class="dish-ingredients-list"
-                >
-                  <div class="row ingredient-div">
-                    <div
-                      class="col-9 p-0 d-flex justify-content-start align-items-end"
-                    >
-                      <p class="m-0 mr-2">{{ ingredient.ingredient_name }}</p>
-                      <transition
-                        name="slideEditIngredientButtons"
-                        mode="out-in"
-                      >
-                        <div
-                          v-if="isIngredientsEdited"
-                          class="row edit-ingredient-buttons-div"
-                        >
-                          <div
-                            class="button-small button-xxs"
-                            @click="
-                              showEditIngredientModal(
-                                ingredient.recipe_element_id
-                              )
-                            "
-                          >
-                            <i class="fas fa-pen"></i>
-                          </div>
-                          <div
-                            class="button-small button-xxs"
-                            @click="showDeleteIngredientModal(index)"
-                          >
-                            <i class="fas fa-trash-alt"></i>
-                          </div>
-                        </div>
-                      </transition>
-                    </div>
-                    <div
-                      class="col-3 p-0 d-flex justify-content-end align-items-end"
-                    >
-                      <p class="m-0">
-                        {{ ingredient.amount }} {{ ingredient.shortcut }}
-                      </p>
-                    </div>
-                  </div>
-                  <div class="row" style="height:1.5rem"></div>
-                </div>
-              </transition-group>
-            </div>
-            <div class="row d-flex justify-content-start"></div>
-          </div>
-        </div>
-
-        <!--buttons-->
-        <div v-if="isIngredientsEdited" class="row mt-3 ml-3">
-          <div class="button mr-3 mb-3 mb-lg-0" @click="showAddIngredientModal">
-            <div class="button-icon">
-              <i class="fas fa-plus"></i>
-            </div>
-            <span>dodaj</span>
-          </div>
-          <div class="button mb-3 mb-lg-0" @click="cancelEditingAllIngredients">
-            <div class="button-icon">
-              <i class="fas fa-times"></i>
-            </div>
-            <span>anuluj</span>
-          </div>
-        </div>
-        <div v-else class="row mt-3 ml-3">
-          <div class="button mb-3 mb-lg-0" @click="editingAllIngredients">
-            <div class="button-icon">
-              <i class="fas fa-pen"></i>
-            </div>
-            <span>edytuj</span>
-          </div>
-        </div>
-      </div>
-
-      <!--steps-->
-      <div class="col-lg-7 px-0 px-lg-3">
-        <div class="step-main-div">
-          <div class="row">
-            <h2 class="mb-4 mt-2">Krok po kroku:</h2>
-          </div>
-          <div>
-            <div>
-              <transition-group name="list">
-                <div
-                  v-for="(step, index) in dishSteps"
-                  :key="index"
-                  class="dish-steps-list"
-                >
-                  <div class="step-div">
-                    <div class="row d-flex justify-content-start">
-                      <p>Krok {{ step.step_number }}</p>
-                      <transition name="slideEditStepButtons" mode="out-in">
-                        <div v-if="isStepsEdited" class="edit-step-buttons-div">
-                          <div
-                            class="button-small button-xxs ml-2"
-                            @click="showEditStepModal(index)"
-                          >
-                            <i class="fas fa-pen"></i>
-                          </div>
-                          <div
-                            class="button-small button-xxs"
-                            @click="showDeleteStepModal(index)"
-                          >
-                            <i class="fas fa-trash-alt"></i>
-                          </div>
-                        </div>
-                      </transition>
-                    </div>
-                    <div class="row d-flex justify-content-start">
-                      <p class="mb-0">{{ step.instructions }}</p>
-                    </div>
-                  </div>
-                  <!--buttons-->
-                  <div class="row" style="height:1.5rem"></div>
-                </div>
-              </transition-group>
-            </div>
-            <div class="row d-flex justify-content-start"></div>
-          </div>
-        </div>
-
-        <!--buttons-->
-        <div v-if="isStepsEdited" class="row mt-3 ml-3">
-          <div class="button mr-3 mb-3 mb-lg-0" @click="showAddStepModal">
-            <div class="button-icon">
-              <i class="fas fa-plus"></i>
-            </div>
-            <span>dodaj</span>
-          </div>
-          <div class="button mb-3 mb-lg-0" @click="cancelEditingAllSteps">
-            <div class="button-icon">
-              <i class="fas fa-times"></i>
-            </div>
-            <span>anuluj</span>
-          </div>
-        </div>
-        <div v-else class="row mt-3 ml-3">
-          <div class="button mb-3 mb-lg-0" @click="editingAllSteps">
-            <div class="button-icon">
-              <i class="fas fa-pen"></i>
-            </div>
-            <span>edytuj</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--_____________________________________________________________modals___________________________________________________________________-->
-    <!--delete dish modal-->
-    <div v-if="deleteDishModal" class="overlay">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Usuń przepis
-            </h5>
-          </div>
-          <div class="modal-body ">
-            Czy na pewno chcesz usunąć przepis <b>{{ dish[0].dish_name }}</b> ?
-          </div>
-          <div class="modal-footer">
-            <div class="button mr-3" @click="deleteCurrentDish">
-              <div class="button-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <span>akceptuj</span>
-            </div>
-            <div class="button" @click="hideDeleteDishModal">
-              <div class="button-icon">
-                <i class="fas fa-times"></i>
-              </div>
-              <span>anuluj</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--edit step modal-->
-    <div v-if="editStepModal" class="overlay">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Zaktualizuj krok
-            </h5>
-            <div class="button-small" @click="hideEditStepModal">
-              <i class="fas fa-times"></i>
-            </div>
-          </div>
-          <div class="modal-body ">
-            <div
-              v-show="editingStepError && editingStepErrorAlert"
-              class="alert custom-alert alert-danger"
-              role="alert"
-              @click="hideAlert"
-            >
-              Nie udało się zaktualizować kroku!
-            </div>
-            <div class="row mt-1">
-              <h6>Numer kroku:</h6>
-            </div>
-            <input
-              type="number"
-              v-model="dishSteps[editedStepIndex].step_number"
-              class="form-control custom-input"
-            />
-            <div
-              v-show="
-                (dishSteps[editedStepIndex].step_number < 1 ||
-                  dishSteps[editedStepIndex].step_number > 99 ||
-                  dishSteps[editedStepIndex].step_number == '') &&
-                  editingStepError == true
-              "
-              class="alert custom-alert-small alert-danger"
-              role="alert"
-            >
-              Numer kroku musi być z przedziału od 1 do 99
-            </div>
-            <div class="row mt-1">
-              <h6>Instrukcje:</h6>
-            </div>
-            <div class="row">
-              <textarea
-                rows="5"
-                cols="60"
-                class="form-control custom-input"
-                name="instructions"
-                v-model="dishSteps[editedStepIndex].instructions"
-              ></textarea>
-              <div
-                v-show="
-                  dishSteps[editedStepIndex].instructions == '' &&
-                    editingStepError == true
-                "
-                class="alert custom-alert-small alert-danger"
-                role="alert"
-              >
-                Musisz podać instrukcje
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <div class="button" @click="confirmEditingStep">
-              <div class="button-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <span>akceptuj</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--add step modal-->
-    <div v-if="addStepModal" class="overlay">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Dodaj krok
-            </h5>
-            <div class="button-small" @click="hideAddStepModal">
-              <i class="fas fa-times"></i>
-            </div>
-          </div>
-          <div class="modal-body ">
-            <div
-              v-show="addingStepError && addingStepErrorAlert"
-              class="alert custom-alert alert-danger"
-              role="alert"
-              @click="hideAlert"
-            >
-              Nie udało się dodać kroku!
-            </div>
-            <div class="row">
-              <div class="row mt-1">
-                <h6>Numer kroku:</h6>
-              </div>
-              <input
-                type="number"
-                v-model="newStep.step_number"
-                class="form-control custom-input"
-              />
-              <div
-                v-show="
-                  (newStep.step_number < 1 ||
-                    newStep.step_number > 99 ||
-                    newStep.step_number == '') &&
-                    addingStepError == true
-                "
-                class="alert custom-alert-small alert-danger"
-                role="alert"
-              >
-                Numer kroku musi być z przedziału od 1 do 99
-              </div>
-            </div>
-            <div class="row mt-1">
-              <h6>Instrukcje:</h6>
-            </div>
-            <div class="row">
-              <textarea
-                rows="5"
-                cols="60"
-                class="form-control custom-input"
-                name="instructions"
-                v-model="newStep.instructions"
-              ></textarea>
-              <div
-                v-show="newStep.instructions == '' && addingStepError == true"
-                class="alert custom-alert-small alert-danger"
-                role="alert"
-              >
-                Musisz podać instrukcje
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <div class="button mr-3" @click="confirmAddingStep">
-              <div class="button-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <span>akceptuj</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--delete step modal-->
-    <div v-if="deleteStepModal" class="overlay">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Usuń krok
-            </h5>
-          </div>
-          <div class="modal-body">
-            Czy na pewno chcesz usunąć
-            <b>Krok {{ dishSteps[editedStepIndex].step_number }}</b> ?
-          </div>
-          <div class="modal-footer">
-            <div class="button mr-3" @click="confirmDeletingStep">
-              <div class="button-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <span>akceptuj</span>
-            </div>
-            <div class="button" @click="hideDeleteStepModal">
-              <div class="button-icon">
-                <i class="fas fa-times"></i>
-              </div>
-              <span>anuluj</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--edit ingredient modal-->
-    <div v-if="editIngredientModal" class="overlay">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Zaktualizuj składnik
-            </h5>
-            <div class="button-small" @click="hideEditIngredientModal">
-              <i class="fas fa-times"></i>
-            </div>
-          </div>
-          <div class="modal-body">
-            <div
-              v-show="editingIngredientError && editingIngredientErrorAlert"
-              class="alert custom-alert alert-danger"
-              role="alert"
-              @click="hideAlert"
-            >
-              Nie udało sie zaktualizować składnika!
-            </div>
-            <h6>Składnik:</h6>
-            <div class="input-group mb-3 mt-3">
-              <p class="mt-2 mr-4 ml-1 font-italic">
-                {{ editedIngredient.ingredient_name }}
-              </p>
-              <div
-                class="button select-button"
-                @click="showChooseIngredientModal"
-              >
-                <div class="button-icon">
-                  <i class="fas fa-list"></i>
-                </div>
-                <span>wybierz</span>
-              </div>
-            </div>
-            <h6>Ilość ({{ editedIngredient.unit_name }}):</h6>
-            <input
-              type="number"
-              class="form-control custom-input"
-              v-model="editedIngredient.amount"
-            />
-            <div
-              v-show="
-                (editedIngredient.amount < 1 ||
-                  editedIngredient.amount > 9999 ||
-                  editedIngredient.amount == '') &&
-                  editingIngredientError == true
-              "
-              class="alert custom-alert-small alert-danger mb-0"
-              role="alert"
-            >
-              Ilość składnika musi być z przedziału od 1 do 9999
-            </div>
-          </div>
-          <div class="modal-footer">
-            <div class="button" @click="confirmEditingIngredient">
-              <div class="button-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <span>akceptuj</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--choose ingredient modal-->
-    <div v-if="chooseIngredientModal" class="overlay">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Wybierz składnik
-            </h5>
-            <div class="button-small" @click="hideChooseIngredientModal">
-              <i class="fas fa-times"></i>
-            </div>
-          </div>
-          <div class="modal-body">
-            <div
-              v-show="ingredientNotSelected"
-              class="alert custom-alert alert-danger"
-              role="alert"
-              @click="hideAlert"
-            >
-              Nie wybrano żadnego składnika!
-            </div>
-            <div class="row border-bottom">
-              <div class="col-8"><h6>Składnik:</h6></div>
-              <div class="col-4"><h6>Jednostka:</h6></div>
-            </div>
-            <div
-              class="row"
-              v-for="(ingredient, index) in ingredients"
-              :key="index"
-            >
-              <label class="choose-ingredient">
-                <input
-                  type="radio"
-                  name="ingredient"
-                  :value="ingredient.ingredient_id"
-                  v-model="chosenIngredientId"
-                  class="choose-ingredient-input"
-                />
-                <div class="py-2">
-                  <div class="row">
-                    <div class="col-8 ml-1">
-                      {{ ingredient.ingredient_name }}
-                    </div>
-                    <div class="col-3 ml-1">{{ ingredient.unit_name }}</div>
-                  </div>
-                </div>
-              </label>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <div class="button" @click="confirmChoosingIngredient">
-              <div class="button-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <span>akceptuj</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--add ingredient modal-->
-    <div v-if="addIngredientModal" class="overlay">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Dodaj składnik
-            </h5>
-            <div class="button-small" @click="hideAddIngredientModal">
-              <i class="fas fa-times"></i>
-            </div>
-          </div>
-          <div class="modal-body">
-            <div
-              v-show="addingIngredientError && addingIngredientErrorAlert"
-              class="alert custom-alert alert-danger"
-              role="alert"
-              @click="hideAlert"
-            >
-              Nie udało się dodać składnika!
-            </div>
-            <h6>Wybierz składnik:</h6>
-            <div class="input-group mb-3 mt-3">
-              <p
-                v-if="newIngredient.ingredient_name != ''"
-                class="mt-2 mr-4 ml-1 font-italic"
-              >
-                {{ newIngredient.ingredient_name }}
-              </p>
-              <p v-else class="mt-2 mr-4 ml-1 font-italic">
-                nie wybrano...
-              </p>
-              <div class="button" @click="showNewIngredientModal">
-                <div class="button-icon">
-                  <i class="fas fa-list"></i>
-                </div>
-                <span>wybierz</span>
-              </div>
-            </div>
-            <h6>Ilość ({{ newIngredient.unit_name }}):</h6>
-            <input
-              type="number"
-              class="form-control custom-input"
-              v-model="newIngredient.amount"
-            />
-            <div
-              v-show="
-                (newIngredient.amount < 1 ||
-                  newIngredient.amount > 9999 ||
-                  newIngredient.amount == '') &&
-                  addingIngredientError == true
-              "
-              class="alert custom-alert-small alert-danger mb-0"
-              role="alert"
-            >
-              Ilość składnika musi być z przedziału od 1 do 9999
-            </div>
-          </div>
-          <div class="modal-footer">
-            <div class="button" @click="confirmAddingIngredient">
-              <div class="button-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <span>akceptuj</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--choose new ingredient modal-->
-    <div v-if="newIngredientModal" class="overlay">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Wybierz nowy składnik
-            </h5>
-            <div class="button-small" @click="hideNewIngredientModal">
-              <i class="fas fa-times"></i>
-            </div>
-          </div>
-          <div class="modal-body">
-            <div
-              v-show="ingredientNotSelected"
-              class="alert custom-alert alert-danger"
-              role="alert"
-              @click="hideAlert"
-            >
-              Nie wybrano żadnego składnika!
-            </div>
-            <div class="row border-bottom">
-              <div class="col-8"><h6>Składnik:</h6></div>
-              <div class="col-4"><h6>Jednostka:</h6></div>
-            </div>
-            <div
-              class="row"
-              v-for="(ingredient, index) in ingredients"
-              :key="index"
-            >
-              <label class="choose-ingredient">
-                <input
-                  type="radio"
-                  name="ingredient"
-                  :value="ingredient.ingredient_id"
-                  v-model="chosenIngredientId"
-                  class="choose-ingredient-input"
-                />
-                <div class="py-2">
-                  <div class="row">
-                    <div class="col-8 ml-1">
-                      {{ ingredient.ingredient_name }}
-                    </div>
-                    <div class="col-3 ml-1">{{ ingredient.unit_name }}</div>
-                  </div>
-                </div>
-              </label>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <div class="button" @click="confirmNewIngredient">
-              <div class="button-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <span>akceptuj</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!--delete ingredient modal-->
-    <div v-if="deleteIngredientModal" class="overlay">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Usuń składnik
-            </h5>
-          </div>
-          <div class="modal-body">
-            Czy na pewno chcesz usunąć
-            <b>
-              {{ dishIngredients[deletedIngredientIndex].ingredient_name }}</b
-            >
-            z listy składników ?
-          </div>
-          <div class="modal-footer">
-            <div class="button mr-3" @click="confirmDeletingIngredient">
-              <div class="button-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <span>akceptuj</span>
-            </div>
-            <div class="button" @click="hideDeleteIngredientModal">
-              <div class="button-icon">
-                <i class="fas fa-times"></i>
-              </div>
-              <span>anuluj</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  </transition>
 </template>
 <script>
 import axios from "axios";
@@ -925,34 +968,10 @@ import axios from "axios";
 export default {
   data() {
     return {
-      dish: {
-        dish_id: "",
-        dish_name: "",
-        image: "",
-        preparation_time: "",
-        rating: "",
-        portion: "",
-      },
-      dishSteps: {
-        step_id: "",
-        step_number: "",
-        instructions: "",
-      },
-      dishIngredients: {
-        recipe_element_id: "",
-        amount: "",
-        ingredient_name: "",
-        ingredient_id: "",
-        kcal_per_unit: "",
-        shortcut: "",
-        unit_name: "",
-      },
-      ingredients: {
-        ingredient_id: "",
-        ingredient_name: "",
-        kcal_per_unit: "",
-        unit_name: "",
-      },
+      dish: [],
+      dishSteps: [],
+      dishIngredients: [],
+      ingredients: [],
       params: { id: this.$route.params.id },
       imgError: false,
       isDishEdited: false,
