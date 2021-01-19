@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div class="main-div">
     <nav class="navbar sticky-top navbar-expand-lg" id="nav-div">
-      <img src="./assets/logo.png" id="navbrand" loading="lazy" />
+      <img src="./assets/logo.png" class="navbrand" loading="lazy" />
+      <div class="brand-name">food tracker</div>
       <button
         class="navbar-toggler navbar-dark"
         type="button"
@@ -19,14 +20,16 @@
             <router-link to="/dishlist">PRZEPISY</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/ingredientlist">SKŁADNIKI</router-link>
+            <router-link to="/calendar">KALENDARZ</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/calendar">KALENDARZ</router-link>
+            <router-link to="/ingredientlist">SKŁADNIKI</router-link>
           </li>
         </ul>
       </div>
     </nav>
-    <router-view />
+    <transition name="fade" mode="out-in">
+      <router-view :key="$route.fullPath" />
+    </transition>
   </div>
 </template>

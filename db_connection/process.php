@@ -11,7 +11,21 @@ if(isset($_GET['action'])){
 }
 
 if($action == 'get_all_dishes'){
-  $sql = $conn->query("SELECT * FROM dishes");
+  $sql = $conn->query("SELECT * FROM dishes ORDER BY RAND()");
+  $dishes = array();
+  while($row = $sql->fetch_assoc()){
+    array_push($dishes, $row);
+  }
+  $result['dishes'] = $dishes;
+}
+if($action == 'get_similar_dishes'){
+  $tag1 = $_POST['tag1'];
+  $tag2 = $_POST['tag2'];
+  $tag3 = $_POST['tag3'];
+  $tag4 = $_POST['tag4'];
+  $category = $_POST['category'];
+
+  $sql = $conn->query("SELECT * FROM dishes WHERE category LIKE '%{$category}%' AND (dish_name LIKE '%{$tag1}%' OR dish_name LIKE '%{$tag2}%' OR dish_name LIKE '%{$tag3}%' OR dish_name LIKE '%{$tag4}%')");
   $dishes = array();
   while($row = $sql->fetch_assoc()){
     array_push($dishes, $row);
@@ -24,9 +38,9 @@ if($action == 'add_dish'){
   $image = $_POST['image'];
   $prepTime = $_POST['preparation_time'];
   $rating = $_POST['rating'];
-  $portions = $_POST['portions'];
+  $category = $_POST['category'];
 
-  $sql = $conn->query("INSERT INTO dishes (dish_name, preparation_time, rating, image, portions) VALUES('$name','$prepTime','$rating','$image','$portions')");
+  $sql = $conn->query("INSERT INTO dishes (dish_name, preparation_time, rating, image, category) VALUES('$name','$prepTime','$rating','$image', '$category')");
   
   if($sql){
     $added_id = $conn->insert_id;
@@ -44,9 +58,9 @@ if($action == 'update_dish'){
   $image = $_POST['image'];
   $prepTime = $_POST['preparation_time'];
   $rating = $_POST['rating'];
-  $portions = $_POST['portions'];
+  $category = $_POST['category'];
 
-  $sql = $conn->query("UPDATE dishes SET dish_name='$name',preparation_time='$prepTime',rating='$rating',image='$image',portions='$portions' WHERE dish_id='$id'");
+  $sql = $conn->query("UPDATE dishes SET dish_name='$name',preparation_time='$prepTime',rating='$rating',image='$image', category='$category' WHERE dish_id='$id'");
 
   if($sql){
     $result['message'] = "Dish updated successfully!";
@@ -221,12 +235,30 @@ if($action == 'get_day'){
   $year = $_POST['year'];
   $index = $_POST['index'];
 
-  $sql = $conn->query("SELECT dish_id, dish_name, image FROM date_dish_view WHERE day = '$day' AND month = '$month' AND year = '$year' AND meal_number = '$index'");
+  $sql = $conn->query("SELECT * FROM date_dish_view WHERE day = '$day' AND month = '$month' AND year = '$year' AND meal_number = '$index'");
   $day = array();
   while($row = $sql->fetch_assoc()){
     array_push($day, $row);
   }
   $result['day'] = $day;
+}
+
+if($action == 'set_portions'){
+  $day = $_POST['day'];
+  $month = $_POST['month'];
+  $year = $_POST['year'];
+  $index = $_POST['index'];
+  $portions = $_POST['portions'];
+
+  $sql = $conn->query("UPDATE calendar SET portions='$portions' WHERE day = '$day' AND month = '$month' AND year = '$year' AND meal_number = '$index'");
+
+  if($sql){
+    $result['message'] = "Success!";
+  }
+  else{
+    $result['error'] = true;
+    $result['message'] = "Failed!";
+  }
 }
 
 
@@ -236,8 +268,11 @@ if($action == 'replace_day'){
   $year = $_POST['year'];
   $index = $_POST['index'];
   $dish_id = $_POST['dish_id'];
+  $preparation_time = $_POST['preparation_time'];
+  $rating = $_POST['rating'];
+  $portions = $_POST['portions'];
 
-  $sql = $conn->query("REPLACE INTO calendar (day, month, year, meal_number, dish_id) VALUES ('$day','$month','$year','$index','$dish_id')");
+  $sql = $conn->query("REPLACE INTO calendar (day, month, year, meal_number, dish_id, portions, preparation_time, rating ) VALUES ('$day','$month','$year','$index','$dish_id','$portions','$preparation_time','$rating')");
 
   if($sql){
     $result['message'] = "Day replaced successfully!";

@@ -7,59 +7,196 @@
   --baseGrey: #424242;
   --lightGrey: #dddddd;
 }
+
 /*----------------dish details--------------*/
-.perspective {
-  perspective: 2000px;
+.dish-details-div {
+  padding: 16px;
+  height: 100%;
+  padding-bottom: 56px;
 }
-.dish-image-xl {
+.dish-details-div::after {
+  position: absolute;
+  content: "";
   width: 100%;
-  object-fit: cover;
+  height: 498px;
+  left: 0;
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.5) 40%,
+    rgba(0, 0, 0, 0.1) 100%
+  );
   z-index: 1;
-  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.3);
 }
-.dish-image-xl.alt-image-xl {
-  background-color: whitesmoke;
-  padding: 5% 20%;
-  object-fit: contain;
+.dish-details-image-div {
+  width: 100%;
+  height: 500px;
+  background-size: cover;
+  margin-left: 16px;
+  margin-right: 16px;
+  position: relative;
+  background-position: 0% 55%;
+  border: 1px solid var(--lightGrey);
+}
+.dish-details-button {
+  z-index: 2;
+}
+.dish-details-buttons-div {
+  position: absolute;
+  bottom: 16px;
 }
 #dish-name {
-  font-size: 35px;
-  font-weight: 600;
+  font-size: 70px;
+  font-weight: 400;
   margin: 0;
+  line-height: 105%;
+  margin-bottom: 15px;
+  z-index: 2;
+  color: var(--lightYellow);
+}
+#stars {
+  display: flex;
+  justify-content: start;
+  margin-top: -17px;
+  margin-left: -3px;
+  margin-bottom: 5px;
+  padding: 0;
+  padding-right: 32px;
+  z-index: 2;
 }
 #stars label {
-  font-size: 40px;
+  font-size: 45px;
   margin: 0;
-  margin-right: 5px;
+  margin-right: 4px;
+}
+.star-icon.star-icon-dish-details {
+  color: var(--baseGrey);
 }
 #kcal span,
 #portions span,
-#preptime span {
-  font-size: 35px;
+#preptime span,
+#category span {
+  font-size: 36px;
   color: var(--baseYellow);
+  padding-left: 2px;
+}
+#kcal span {
+  font-weight: 500;
 }
 #kcal p,
 #portions p,
 #preptime p {
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 30px;
+  font-weight: 300;
+  padding-left: 16px;
+  padding-right: 32px;
+  color: var(--lightYellow);
+}
+#category p {
+  margin: 0;
+  font-size: 30px;
+  font-weight: 300;
+  color: var(--lightYellow);
+}
+#category div.category {
+  padding-left: 16px;
+  padding-right: 32px;
+}
+#kcal,
+#portions,
+#preptime,
+#category {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 0;
+  z-index: 2;
 }
 .border-bottom {
   border-bottom: 1px solid var(--lightGrey);
 }
-#dish-div {
-  position: relative;
-  overflow: hidden;
-  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.2);
-  padding: 12px 20px;
-  transform-style: preserve-3d;
+.row.dish-details-buttons-div {
+  margin-top: -40px;
+  height: 40px;
 }
 .step-div,
 .ingredient-div {
   position: relative;
 }
+.row.ingredient-div {
+  min-height: 50px;
+}
+.ingredient-div::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: calc(100% - 1px);
+  left: 0px;
+  top: -1px;
+  background: rgb(245, 245, 245);
+  transition: all 0.2s ease-out;
+  opacity: 0;
+}
 .ingredient-div::after {
+  content: "";
+  position: absolute;
+  width: calc(100% - 46px);
+  height: 100%;
+  left: 46px;
+  top: -1px;
+  z-index: -1;
+  border-bottom: 1px solid var(--lightGrey);
+}
+
+.ingredient-label {
+  position: relative;
+  display: flex;
+  justify-content: start;
+  cursor: pointer;
+  width: 100%;
+  margin: 0;
+}
+.ingredient-label > input {
+  visibility: hidden;
+  position: absolute;
+}
+.ingredient-input:checked ~ .ingredient-col .ingredient-checkmark::before {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: -10px;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transform: rotate(45deg);
+  transform-origin: 0% 100%;
+  animation: checkbox-check 0.125s 0.25s cubic-bezier(0.4, 0, 0.23, 1) forwards;
+}
+.ingredient-input:checked ~ .ingredient-col .ingredient-checkmark {
+  border: 15px solid var(--baseYellow);
+  animation: shrink-bounce 0.2s cubic-bezier(0.4, 0, 0.23, 1);
+}
+.ingredient-input:checked ~ .ingredient-col .ingredient-name {
+  color: var(--lightGrey);
+}
+.ingredient-checkmark {
+  position: relative;
+  min-width: 30px;
+  min-height: 30px;
+  width: 30px;
+  height: 30px;
+  margin-right: 16px;
+  background: rgb(235, 235, 235);
+  border: 1px solid var(--lightGrey);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.23, 1);
+}
+.ingredient-label:hover .ingredient-checkmark {
+  background: rgb(245, 245, 245);
+}
+
+.step-div::after {
   content: "";
   position: absolute;
   width: 100%;
@@ -68,9 +205,6 @@
   top: -1px;
   z-index: -1;
   border-bottom: 1px solid var(--lightGrey);
-}
-.ingredient-div p {
-  font-size: 18px;
 }
 .edit-ingredient-buttons-div {
   position: relative;
@@ -81,38 +215,245 @@
 .edit-step-buttons-div {
   display: flex;
   justify-content: start;
+  position: relative;
+  top: 3px;
 }
-.dish-inputs-list,
 .dish-ingredients-list,
 .dish-steps-list {
   transition: all 0.1s ease-out;
 }
-.main-add-div,
+.main-add-div {
+  padding: 16px 48px;
+}
 .step-main-div,
 .ingredient-main-div {
-  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.2);
-  padding: 12px 20px;
+  padding: 16px 18px;
+}
+.step-main-div {
+  padding-left: 50px;
+}
+.ingredient-name {
+  font-size: 24px !important;
+  font-weight: 300;
+  transition: all 0.2s ease-out;
+}
+.step-number {
+  font-size: 26px;
+  font-weight: 400;
+}
+.step-instructions {
+  font-size: 21px;
+  font-weight: 300;
+}
+.form-control.custom-input.portions-input {
+  width: 40px;
+  padding: 0px 0px;
+  padding-top: 9px;
+  float: right;
+  text-align: center;
+  border: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+.form-control.custom-input.portions-input:focus {
+  border: 0;
+}
+.portions-header {
+  margin-top: 11px;
+  font-size: 20px;
+}
+.portions-number {
+  font-weight: 600;
+  font-size: 20px;
+}
+.button-small.portions-button {
+  font-size: 20px;
+  width: 30px;
+  height: 30px;
+}
+.button-small.portions-button-inactive {
+  font-size: 20px;
+  width: 30px;
+  height: 30px;
+  background: var(--lightGrey);
+}
+.button-small.portions-button-inactive:hover {
+  background-color: var(--lightGrey);
+  color: var(--baseGrey);
+}
+.add-dish-header {
+  font-weight: 450;
+  font-size: 18px;
+}
+
+.dish-category-div {
+  padding-top: 6px;
+  padding-left: 4px;
+  display: flex;
+  justify-content: start;
+}
+.dish-category-label {
+  position: relative;
+  display: flex;
+  justify-content: start;
+  cursor: pointer;
+  margin-right: 20px;
+}
+.dish-category-label > input {
+  visibility: hidden;
+  position: absolute;
+}
+.dish-category-label p {
+  font-size: 18px;
+  font-weight: 300;
+  padding-left: 10px;
+  margin: 0;
+}
+.dish-category-input:checked ~ .dish-category-checkmark::before {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: -10px;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transform: rotate(45deg);
+  transform-origin: 0% 100%;
+  animation: checkbox-check 0.125s 0.25s cubic-bezier(0.4, 0, 0.23, 1) forwards;
+}
+.dish-category-input:checked ~ .dish-category-checkmark {
+  border: 15px solid var(--baseYellow);
+  animation: shrink-bounce 0.2s cubic-bezier(0.4, 0, 0.23, 1);
+}
+@keyframes checkbox-check {
+  0% {
+    width: 0;
+    height: 0;
+    border-color: var(--baseGrey);
+  }
+  33% {
+    width: 10px;
+    height: 0;
+  }
+  100% {
+    width: 10px;
+    height: 18px;
+    border-color: var(--baseGrey);
+    background: var(--baseYellow);
+  }
+}
+@keyframes shrink-bounce {
+  0% {
+    transform: scale(1);
+  }
+  33% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.dish-category-checkmark {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  background: rgb(235, 235, 235);
+  border: 1px solid var(--lightGrey);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.23, 1);
+}
+.dish-category-label:hover .dish-category-checkmark {
+  background: rgb(250, 250, 250);
+}
+.similar-dishes-div {
+  display: flex;
+  justify-content: start;
+}
+.similar-dish {
+  height: 280px;
+  width: 20%;
+  background-size: cover;
+  border: 1px solid var(--lightGrey);
+}
+.similar-dish:hover .similar-dish-name {
+  opacity: 1;
+}
+.similar-dish:hover .similar-dish-details {
+  opacity: 1;
+}
+.similar-dish-name {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  width: 100%;
+  height: 50%;
+  font-size: 20px;
+  background: rgb(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  color: var(--lightYellow);
+  padding: 0px 20px;
+  padding-top: 20%;
+  opacity: 0;
+  transition: all 0.2s ease-out;
+}
+.similar-dish-details {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  height: 50%;
+  padding-bottom: 20%;
+  background: rgb(0, 0, 0, 0.6);
+  display: flex;
+  color: var(--lightYellow);
+  opacity: 0;
+  transition: all 0.2s ease-out;
+}
+.star-icon.similar-dish-star-icon {
+  color: var(--baseGrey);
+}
+.similar-dish-star-icon.checked {
+  color: var(--lightYellow);
+}
+.similar-dish-preptime,
+.similar-dish-kcalsum {
+  font-family: "Work Sans", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+.similar-dish-preptime,
+.similar-dish-kcalsum,
+.similar-dish-rating {
+  display: flex;
+  justify-content: center;
+}
+.similar-dish-rating label {
+  font-size: 25px;
+  margin-bottom: -1px;
 }
 
 /*----------------transitions--------------*/
 .slideDishDiv-leave-to {
-  transform: rotateY(99deg);
+  transform: translateX(150%);
+  opacity: 0;
 }
 .slideDishDiv-enter {
-  transform: rotateY(-81deg);
+  transform: translateY(-150%);
 }
 .slideDishDiv-enter-active {
-  transition: all 0.3s cubic-bezier(0.34, 0.55, 0.71, 1.05);
+  transition: all 0.5s ease-out;
 }
 .slideDishDiv-leave {
-  transform: rotateY(0deg);
+  transform: translateX(0%);
 }
 .slideDishDiv-enter-to {
-  transform: rotateY(0deg);
+  transform: translateY(0%);
 }
 .slideDishDiv-leave-active {
-  transition: all 0.3s cubic-bezier(0.76, 0.52, 1, 0.98);
+  transition: all 0.5s ease-out;
+  width: 100%;
+  position: absolute;
 }
+
 .slideEditStepButtons-enter,
 .slideEditStepButtons-leave-to,
 .slideEditIngredientButtons-enter,
@@ -127,6 +468,118 @@
   transition: all 0.1s ease-out;
 }
 
+.fade-leave-to,
+.fade-enter {
+  opacity: 0;
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.1s ease-out;
+}
+
+.fadeLong-leave-to,
+.fadeLong-enter {
+  opacity: 0;
+}
+.fadeLong-enter-active,
+.fadeLong-leave-active {
+  transition: all 0.2s ease-out;
+}
+
+.alert-enter {
+  z-index: 9999;
+  max-height: 0px;
+  padding: 0px 20px;
+  margin-bottom: 0px;
+  opacity: 0;
+}
+.alert-enter-to {
+  z-index: 9999;
+  max-height: 72px;
+}
+.alert-leave {
+  z-index: 9999;
+  max-height: 72px;
+}
+.alert-leave-to {
+  z-index: 9999;
+  max-height: 0px;
+  padding: 0px 20px;
+  margin-bottom: 0px;
+  opacity: 0;
+}
+.alert-enter-active {
+  transition: all 0.2s ease-out;
+  z-index: 9999;
+}
+.alert-leave-active {
+  transition: all 0.2s ease-out;
+  z-index: 9999;
+  position: absolute;
+}
+
+.inputsAlert-enter {
+  opacity: 0;
+  max-height: 0px;
+}
+.inputsAlert-enter-to {
+  max-height: 60px;
+}
+.inputsAlert-leave {
+  max-height: 60px;
+}
+.inputsAlert-leave-to {
+  opacity: 0;
+  max-height: 0px;
+}
+.inputsAlert-enter-active {
+  transition: all 0.3s;
+}
+.inputsAlert-leave-active {
+  transition: all 0.3s;
+  position: absolute;
+}
+
+.modalsInputAlert-enter {
+  opacity: 0;
+  z-index: 999;
+  max-height: 0px;
+  margin-bottom: 0;
+}
+.modalsInputAlert-enter-to {
+  z-index: 999;
+  max-height: 60px;
+}
+.modalsInputAlert-leave {
+  z-index: 999;
+  max-height: 60px;
+}
+.modalsInputAlert-leave-to {
+  opacity: 0;
+  z-index: 999;
+  max-height: 0px;
+  margin-bottom: 0;
+}
+.modalsInputAlert-enter-active {
+  transition: all 0.3s;
+  z-index: 999;
+}
+.modalsInputAlert-leave-active {
+  transition: all 0.3s;
+  z-index: 999;
+  position: absolute;
+}
+
+.add-dish-div-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 85vh;
+  width: 100%;
+  background: transparent;
+}
+
+/*----------------list transitions--------------*/
 .list-enter {
   opacity: 0;
   z-index: -999;
@@ -142,39 +595,124 @@
 }
 .list-leave-active {
   transition: all 0.2s ease-out;
+  z-index: -999;
   position: absolute;
 }
 .list-move {
+  transition: all 0.25s ease-in-out;
+  z-index: 999;
+}
+
+.ingredientsList-enter,
+.dishStepsList-enter,
+.addStepsList-enter,
+.dishIngredientsList-enter,
+.addIngredientsList-enter {
+  opacity: 0;
+  z-index: -999;
+  transform: translateY(-70px);
+  max-height: 0px;
+}
+.ingredientsList-leave-to,
+.dishStepsList-leave-to,
+.addStepsList-leave-to,
+.dishIngredientsList-leave-to,
+.addIngredientsList-leave-to {
+  opacity: 0;
+  z-index: -999;
+  transform: translateY(-70px);
+  max-height: 0px;
+}
+.ingredientsList-enter-active,
+.dishStepsList-enter-active,
+.addStepsList-enter-active,
+.dishIngredientsList-enter-active,
+.addIngredientsList-enter-active {
+  transition: all 0.3s ease-out;
+  z-index: -9999;
+}
+.ingredientsList-leave-active,
+.dishStepsList-leave-active,
+.addStepsList-leave-active,
+.dishIngredientsList-leave-active,
+.addIngredientsList-leave-active {
+  transition: all 0.3s ease-out;
+  z-index: -9999;
+}
+.ingredientsList-move,
+.dishStepsList-move,
+.addStepsList-move,
+.dishIngredientsList-move,
+.addIngredientsList-move {
   transition: all 0.2s ease-out;
+  z-index: -9999;
 }
 
-.modal-leave-to,
-.modal-enter {
-  opacity: 0;
+.addStepsList-enter-to {
+  opacity: 1;
+  z-index: -999;
+  transform: translateY(0px);
+  max-height: 140px;
 }
-.modal-enter-active,
-.modal-leave-active {
-  transition: all 0.1s ease-out;
-}
-
-.fade-leave-to,
-.fade-enter {
-  opacity: 0;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: all 0.2s ease-out;
+.addStepsList-leave {
+  opacity: 1;
+  z-index: -999;
+  transform: translateY(0px);
+  max-height: 140px;
 }
 
-.fadeIn-enter {
-  opacity: 0;
+.addIngredientsList-enter-to {
+  opacity: 1;
+  z-index: -999;
+  transform: translateY(0px);
+  max-height: 150px;
 }
-.fadeIn-enter-active {
-  transition: all 0.4s ease-out;
+.addIngredientsList-leave {
+  opacity: 1;
+  z-index: -999;
+  transform: translateY(0px);
+  max-height: 150px;
 }
-.fadeIn-leave-active {
-  transition: all 0s ease-out;
+
+.dishStepsList-enter-to {
+  opacity: 1;
+  z-index: -999;
+  transform: translateY(0px);
+  max-height: 150px;
 }
+.dishStepsList-leave {
+  opacity: 1;
+  z-index: -999;
+  transform: translateY(0px);
+  max-height: 150px;
+}
+
+.dishIngredientsList-enter-to {
+  opacity: 1;
+  z-index: -999;
+  transform: translateY(0px);
+  max-height: 51px;
+}
+.dishIngredientsList-leave {
+  opacity: 1;
+  z-index: -999;
+  transform: translateY(0px);
+  max-height: 51px;
+}
+
+.ingredientsList-enter-to {
+  opacity: 1;
+  z-index: -999;
+  transform: translateY(0px);
+  max-height: 40px;
+}
+.ingredientsList-leave {
+  opacity: 1;
+  z-index: -999;
+  transform: translateY(0px);
+  max-height: 40px;
+}
+
 /*----------------buttons--------------*/
 .button {
   position: relative;
@@ -185,7 +723,6 @@
   color: var(--baseGrey);
   overflow: hidden;
   transition: all 0.2s ease-out;
-  box-shadow: 3px 3px 5px 1px rgba(0, 0, 0, 0.5);
 }
 .button span,
 .button .button-icon {
@@ -238,9 +775,7 @@
   background-color: var(--lightYellow);
 }
 .button:active {
-  box-shadow: 0 0 0 0;
-  transform: translateX(3px);
-  transform: translateY(3px);
+  transform: scale(0.9);
 }
 .button-small {
   display: flex;
@@ -253,23 +788,20 @@
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   transition: transform 0.5s cubic-bezier(0, 1.2, 0.5, 0.9);
-  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.5);
+  padding-left: 1px;
 }
 .button-small:hover {
   background-color: var(--baseGrey);
   color: var(--lightYellow);
 }
 .button-small:active {
-  box-shadow: 0 0 0 0;
-  transform: translateX(2px);
-  transform: translateY(2px);
+  transform: scale(0.9);
 }
 .button-small.button-xxs {
   width: 24px;
   min-width: 24px;
   height: 22px;
   font-size: 18px;
-  box-shadow: 0 0 0 0;
   background: transparent;
 }
 .button-small.button-xxs:hover {
@@ -323,9 +855,21 @@ input.star-icon:checked ~ label.star-icon::before {
   border: 0;
   border-bottom: 2px solid var(--lightGrey);
   border-radius: 0;
+  z-index: 99;
+  position: relative;
+}
+.form-control.modal-custom-input {
+  border: 0;
+  border-bottom: 2px solid var(--lightGrey);
+  border-radius: 0;
+  z-index: 1000;
   position: relative;
 }
 .form-control.custom-input:focus {
+  border-bottom: 2px solid var(--baseYellow);
+  box-shadow: inset 0 0 0, 0 0 0;
+}
+.form-control.modal-custom-input:focus {
   border-bottom: 2px solid var(--baseYellow);
   box-shadow: inset 0 0 0, 0 0 0;
 }
@@ -341,7 +885,7 @@ input.star-icon:checked ~ label.star-icon::before {
   background: rgba(0, 0, 0, 0.6);
 }
 .overlay .modal-content {
-  box-shadow: 2px 2px 7px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.3);
   border: 0;
   border-radius: 0;
 }
@@ -373,6 +917,57 @@ input.star-icon:checked ~ label.star-icon::before {
   background-color: rgb(235, 235, 235);
   margin-bottom: 0px;
 }
+.ingredient-list-div {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.ingredient-list-div::-webkit-scrollbar {
+  width: 10px;
+}
+
+.ingredient-list-div::-webkit-scrollbar-track {
+  background: whitesmoke;
+}
+
+.ingredient-list-div::-webkit-scrollbar-thumb {
+  background: var(--lightGrey);
+}
+
+.ingredient-list-div::-webkit-scrollbar-thumb:hover {
+  background: rgb(200, 200, 200);
+}
+
+.ingredient-list-div::-webkit-scrollbar-thumb:active {
+  background: rgb(120, 120, 120);
+}
+
+.form-control.custom-input.ingredient-search-input {
+  padding-left: 38px;
+  margin-bottom: -10px;
+  border: 0px;
+  background: whitesmoke;
+}
+.ingredient-search-icon {
+  color: var(--lightGrey);
+  position: relative;
+  top: -20px;
+  left: 10px;
+  font-size: 18px;
+  z-index: 100;
+  transition: all 0.2s ease-out;
+}
+.ingredient-search-input:focus + .ingredient-search-icon {
+  color: var(--baseYellow);
+}
+.modal-leave-to,
+.modal-enter {
+  opacity: 0;
+}
+.modal-enter-active,
+.modal-leave-active {
+  transition: all 0.1s ease-out;
+}
 
 /*----------------custom alerts--------------*/
 .alert.custom-alert {
@@ -380,8 +975,6 @@ input.star-icon:checked ~ label.star-icon::before {
   border: 0;
   overflow: hidden;
   position: relative;
-  margin-bottom: 10px;
-  min-height: 72px;
   display: flex;
   justify-content: start;
   align-items: center;
@@ -401,9 +994,11 @@ input.star-icon:checked ~ label.star-icon::before {
   color: rgb(180, 0, 0);
   padding: 0 12px;
   margin-bottom: 10px;
-  margin-top: 5px;
   overflow: hidden;
   position: relative;
+}
+.error-color {
+  color: rgb(180, 0, 0);
 }
 /*----------------dish list--------------*/
 div.row {
@@ -413,13 +1008,40 @@ div.row {
 .header {
   font-family: "Work Sans", sans-serif;
   font-weight: 800;
-  margin: 0;
+  padding-left: 15px;
+  transition: all 0.2s ease-out;
 }
 .dish-image {
   width: 100%;
   height: 220px;
   border: 1px solid var(--lightGrey);
   object-fit: cover;
+  transition: all 0.2s ease-out;
+}
+.dish-image-div {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+}
+.dish-image-div::after {
+  width: calc(100% - 32px);
+  height: 220px;
+  content: "kliknij, aby zobaczyć szczegóły";
+  position: absolute;
+  background: rgb(0, 0, 0, 0.5);
+  left: 16px;
+  top: 0;
+  z-index: 1;
+  opacity: 0;
+  transition: all 0.2s ease-out;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 800;
+  color: var(--lightYellow);
+  text-transform: uppercase;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .dish-image.alt-image {
   background-color: whitesmoke;
@@ -434,6 +1056,7 @@ div.row {
 .people-icon {
   color: var(--baseYellow);
   font-size: 25px;
+  font-weight: 400;
   transition: all 0.2s ease-out;
 }
 .star-icon {
@@ -463,7 +1086,7 @@ div.row {
 .dish-div::after {
   content: "";
   position: absolute;
-  top: 0;
+  top: -15px;
   width: 0%;
   height: 100%;
   transition: all 0.2s ease-out;
@@ -483,6 +1106,12 @@ div.row {
 .dish-div:hover::before {
   width: 45%;
 }
+.dish-div:hover .dish-image {
+  transform: scale(1.2);
+}
+.dish-div:hover .dish-image-div::after {
+  opacity: 1;
+}
 
 .dish-div:hover .clock-icon,
 .dish-div:hover .star-icon.checked,
@@ -497,16 +1126,18 @@ div.row {
   font-weight: 500;
   margin-bottom: 0;
   padding: 0;
+  font-weight: 400;
 }
-.portions p {
+.kcal p {
   font-size: 14px;
   font-weight: 500;
   margin-bottom: 0;
   padding: 0;
+  font-weight: 400;
 }
 .details .rating,
 .details .preptime,
-.details .portions {
+.details .kcal {
   padding: 0;
 }
 .dish-name {
@@ -528,6 +1159,73 @@ div.row {
   text-decoration: none;
 }
 
+.deleted-dish-div {
+  position: absolute;
+  right: -5px;
+  top: 70vh;
+  height: 150px;
+  width: 250px;
+  box-shadow: -2px 2px 6px 0px rgba(0, 0, 0, 0.3);
+  background: white;
+  z-index: 999;
+}
+.deleted-dish-image {
+  position: absolute;
+  left: 0;
+  top: 30px;
+  height: 120px;
+  width: 250px;
+  object-fit: cover;
+}
+.deleted-dish-name {
+  padding: 0px 10px;
+  position: absolute;
+  left: 0;
+  top: 50px;
+  height: 80px;
+  width: 250px;
+  color: var(--lightYellow);
+  background: rgba(0, 0, 0, 0.4);
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.deleted-dish-header {
+  padding: 0px 10px;
+  padding-top: 2px;
+  font-size: 17px;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: flex;
+}
+.dish-list-div-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 75vh;
+  width: 100%;
+  background: transparent;
+}
+.deletedDish-enter {
+  transform: translateX(600px);
+}
+.deletedDish-enter-to {
+  transform: translateX(0);
+}
+.deletedDish-leave {
+  transform: translateX(0);
+}
+.deletedDish-leave-to {
+  transform: translateX(600px);
+}
+.deletedDish-leave-active,
+.deletedDish-enter-active {
+  transition: all 0.5s ease-out;
+}
+
 /*----------------filters--------------*/
 .filters-button {
   background-color: var(--baseYellow);
@@ -543,8 +1241,8 @@ div.row {
   justify-content: center;
   align-items: center;
   z-index: 2;
-  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.5);
   transition: all 0.2s;
+  box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.3);
 }
 .filters-button div {
   position: absolute;
@@ -575,7 +1273,7 @@ div.row {
   transition: all 0.25s;
   margin-top: 65px;
   background: rgba(80, 80, 80, 0.96);
-  box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.8);
 }
 #search-bar {
   height: 0%;
@@ -589,7 +1287,7 @@ div.row {
   transition: all 0.25s;
   margin-top: 65px;
   background: rgba(80, 80, 80, 0.96);
-  box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.8);
 }
 .form-control.custom-input.search-input {
   position: absolute;
@@ -678,23 +1376,48 @@ div.row {
   bottom: 90px;
   left: 55px;
 }
+.filters-list {
+  display: flex;
+  justify-content: start;
+  align-items: flex-end;
+  margin-bottom: 8px;
+  padding-left: 20px;
+}
+.filters-list p {
+  font-family: "Work Sans", sans-serif;
+  margin: 0;
+  padding: 0px 5px;
+  font-size: 16px;
+  font-weight: 100;
+}
 /*----------------navbar--------------*/
 #nav-div {
   background-color: #424242;
   font-family: "Work Sans", sans-serif;
   font-weight: 600;
-  box-shadow: 0px 0px 6px 2px rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.8);
+  padding: 8px 64px;
+  font-size: 18px;
+  letter-spacing: 1px;
 }
-#navbrand {
+.navbrand {
   width: 50px;
   height: 50px;
   border-radius: 60px;
-  margin-right: 15px;
-  margin-left: 0;
+  margin-right: 25px;
   background-color: #ffcc00;
   border: 0px solid black;
   box-shadow: 0px 0px 1px 1px black;
   transition: all 0.15s ease-in-out;
+}
+.brand-name {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: 6px;
+  color: var(--baseYellow);
+}
+#nav-items-div {
+  justify-content: flex-end;
 }
 #navbrand:hover {
   background-color: #fff9c6;
@@ -705,7 +1428,8 @@ nav a {
   transition: all 0.15s ease-in-out;
 }
 nav li {
-  margin: 0 15px;
+  margin-left: 30px;
+  margin-right: 1px;
 }
 nav a:hover {
   color: #fff9c6;
@@ -715,7 +1439,7 @@ nav a::after,
 nav a::before {
   content: "";
   display: block;
-  height: 3px;
+  height: 4px;
   background-color: #fff9c6;
   position: absolute;
   bottom: -4px;
@@ -742,6 +1466,13 @@ nav a:hover::before {
 .router-link-exact-active::before {
   width: 50%;
 }
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--baseGrey);
+  padding: 8px;
+}
 /*----------------ingredients--------------*/
 #ingredients-table {
   overflow-x: auto;
@@ -754,6 +1485,11 @@ nav a:hover::before {
 #units-table tbody tr:hover,
 #ingredients-table tbody tr:hover {
   background-color: whitesmoke;
+}
+#units-table thead tr .ingredients-table-header:hover,
+#ingredients-table thead tr .ingredients-table-header:hover {
+  background-color: rgb(180, 180, 180);
+  cursor: pointer;
 }
 .ingredient-list-header {
   font-family: "Work Sans", sans-serif;
@@ -795,20 +1531,23 @@ nav a:hover::before {
 /*----------------calendar--------------*/
 
 .current-week {
-  font-size: 22px;
+  font-size: 28px;
   font-family: "Work Sans", sans-serif;
   font-weight: 600;
   padding: 0;
+  color: var(--baseGrey);
 }
 .previous-week,
 .next-week {
-  font-size: 16px;
+  font-size: 22px;
   font-family: "Work Sans", sans-serif;
   font-weight: 600;
+  color: var(--baseGrey);
 }
 .arrow-button {
-  font-size: 50px;
+  font-size: 60px;
   transition: all 0.1s ease-out;
+  color: var(--baseGrey);
 }
 .arrow-button:hover {
   cursor: pointer;
@@ -817,20 +1556,18 @@ nav a:hover::before {
 .arrow-button:active {
   transform: scale(0.9);
 }
-.weeks-header {
-}
 #calendar-table .col.calendar-header-day {
   display: flex;
   justify-content: center;
   font-family: "Work Sans", sans-serif;
-  font-size: 16px;
+  font-size: 25px;
   font-weight: 600;
   text-transform: uppercase;
 }
 .calendar-header {
   background: var(--baseGrey);
   color: var(--lightYellow);
-  height: 40px;
+  height: 60px;
   align-items: center;
 }
 .calendar-div {
@@ -850,7 +1587,7 @@ nav a:hover::before {
   border-radius: 50%;
   width: 80px;
   height: 80px;
-  animation: spin 1s cubic-bezier(0.97, 0.23, 0.03, 0.77) infinite;
+  animation: spin 1s linear infinite;
 }
 .loader.loader-small {
   border: 6px solid var(--lightGrey);
@@ -858,7 +1595,6 @@ nav a:hover::before {
   width: 40px;
   height: 40px;
 }
-
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -867,20 +1603,18 @@ nav a:hover::before {
     transform: rotate(360deg);
   }
 }
+
 #calendar-table .row.cell {
-  transition: all 0.2s ease-out;
+  transition-property: background-color;
+  transition-duration: 0.6s;
+  transition-timing-function: ease-out;
   position: relative;
-  padding: 16px 16px;
+  padding: 8px 8px;
   min-height: 172px;
   max-height: 172px;
 }
 #calendar-table .col {
   padding: 0;
-}
-.dish-image-sm {
-  height: 110px;
-  width: 140px;
-  object-fit: cover;
 }
 .dish-image-sm.alt-image-sm {
   background: whitesmoke;
@@ -890,9 +1624,10 @@ nav a:hover::before {
 .dish-image-calendar {
   width: 100%;
   height: 100%;
-  min-height: 140px;
-  max-height: 140px;
+  min-height: 156px;
+  max-height: 156px;
   object-fit: cover;
+  transition: all 0.1s ease-out;
 }
 .dish-image-calendar.alt-image-calendar {
   height: 1px;
@@ -921,7 +1656,7 @@ nav a:hover::before {
   color: var(--lightYellow);
   font-size: 13px;
   padding: 0 5px;
-  z-index: 998;
+  z-index: 1000;
 }
 .calendar-dish-name {
   margin: 0;
@@ -933,26 +1668,43 @@ nav a:hover::before {
   -webkit-box-orient: vertical;
 }
 .calendar-dish-div {
-  box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 0px 8px 0px rgb(0, 0, 0, 0.6);
   position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.1s ease-out;
 }
 .calendar-dish-div::before {
   content: "";
   position: absolute;
   background: rgb(0, 0, 0, 0.5);
-  height: 30%;
+  height: 26%;
   width: 100%;
   left: 0;
-  top: 35%;
-  z-index: 998;
+  top: 37%;
+  z-index: 1000;
+  transition: all 0.1s ease-out;
 }
-
-.button-small.button-xxs.button-delete-calendar-day {
+.calendar-dish-div:hover::before {
+  height: 45%;
+}
+.calendar-dish-div::after {
+  content: "";
   position: absolute;
-  right: -2px;
-  bottom: -2px;
-  font-size: 18px;
+  background: rgb(0, 0, 0, 0.5);
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
   z-index: 999;
+  opacity: 0;
+  transition: all 0.1s ease-out;
+}
+.calendar-dish-div:hover::after {
+  opacity: 1;
+}
+.calendar-dish-div:hover .dish-image-calendar {
+  transform: scale(1.3);
 }
 .calendar-dragging-ticket {
   position: relative;
@@ -961,89 +1713,250 @@ nav a:hover::before {
   content: "";
   position: absolute;
   background: rgb(255, 200, 0, 1);
-  height: calc(100% - 30px);
-  width: calc(100% - 30px);
+  height: calc(100% - 16px);
+  width: calc(100% - 16px);
+  left: 8px;
+  top: 8px;
   z-index: 1000;
-  top: 15px;
-  left: 15px;
 }
 .calendar-ghost {
-  opacity: 1;
+  opacity: 0;
 }
-.calendar-ghost::before {
-  content: "";
+.calendar-dish-div-menu {
   position: absolute;
-  height: calc(100% - 32px);
-  width: calc(100% - 32px);
-  z-index: 999;
-  background: rgb(255, 200, 0, 1);
-  top: 16px;
-  left: 16px;
-  opacity: 0.5;
+  width: 100%;
+  height: 22px;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  background: rgb(0, 0, 0, 0.5);
+  overflow: hidden;
+  transition: all 0.2s ease-out;
+}
+.calendar-dish-div:hover .calendar-dish-div-menu {
+  height: 22px;
+}
+.calendar-portions-number {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--lightYellow);
+  padding-left: 4px;
+}
+.calendar-portions-icon {
+  font-size: 16px;
+  color: var(--lightYellow);
+}
+.button-small.button-calendar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+  border-radius: 50%;
+  color: var(--lightYellow);
+  transition: all 0.1s ease-out;
+}
+.button-small.button-calendar:hover {
+  background: rgb(255, 255, 255, 0.3);
+  box-shadow: 0px 0px 3px 0px rgb(255, 255, 255, 0.3);
+}
+.calendar-portions-number,
+.calendar-portions-icon,
+.calendar-portions-plus,
+.calendar-portions-minus,
+.calendar-delete-button-div,
+.calendar-details-button-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 22px;
+  width: 22px;
+  position: absolute;
+}
+.calendar-delete-button-div {
+  right: 0px;
+}
+.calendar-details-button-div {
+  right: 23px;
+}
+.calendar-portions-minus {
+  left: 0px;
+}
+.calendar-portions-icon {
+  left: 26px;
+}
+.calendar-portions-number {
+  left: 43px;
+}
+.calendar-portions-plus {
+  left: 63px;
+}
+.row.calendar-details-div {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  height: 25px;
+  left: 0;
+  top: 53%;
+  z-index: 1000;
+  opacity: 0;
+  font-size: 12px;
+  overflow: hidden;
+  transition: all 0.1s ease-out;
+}
+.calendar-dish-div:hover .calendar-details-div {
+  opacity: 1;
+  top: 63%;
+}
+.star-icon.star-icon-calendar {
+  font-size: 22px;
+  color: var(--lightYellow);
+  position: relative;
+  top: 6px;
+  padding-right: 2px;
+}
+.calendar-details-rating,
+.calendar-details-preptime,
+.calendar-details-kcal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+.calendar-details-rating p,
+.calendar-details-preptime p,
+.calendar-details-kcal p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--lightYellow);
+}
+.calendar-details-rating span,
+.calendar-details-preptime span,
+.calendar-details-kcal span {
+  font-size: 16px;
+  color: var(--lightYellow);
+  padding-right: 4px;
 }
 
+.dish-image-sm {
+  height: 54px;
+  width: 100%;
+  object-fit: cover;
+  transition: all 0.1s ease-out;
+}
+.draggable-image-div {
+  height: 54px;
+  width: 100%;
+  overflow: hidden;
+}
 .draggable-dish-border {
-  height: 130px;
-  width: 160px;
-  padding: 10px;
   position: relative;
-  left: -10px;
+  height: 60px;
+  width: 100%;
+  padding: 3px 0px;
 }
 .draggable-dish-div {
-  flex: 0 0 auto;
   position: relative;
-  height: 110px;
-  width: 140px;
-  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.3);
-  background: white;
+  height: 54px;
+  width: 100%;
 }
 .draggable-dish-div::before {
   content: "";
   position: absolute;
-  background: rgb(0, 0, 0, 0.5);
-  height: 70%;
+  background: rgb(0, 0, 0, 0.4);
+  height: 100%;
   width: 100%;
   left: 0;
-  top: 15%;
+  top: 0;
   z-index: 998;
+  transition: all 0.2s ease-out;
+}
+.draggable-dish-div:hover::before {
+  background: rgb(0, 0, 0, 0.8);
+}
+.draggable-dish-handle {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: -57px;
+  width: 54px;
+  height: 54px;
+  color: var(--lightYellow);
+  font-size: 20px;
+  font-weight: 200;
+  border-right: 3px solid var(--lightYellow);
+  z-index: 1000;
+  cursor: move;
+  transition: all 0.15s ease-out;
+}
+.draggable-dish-div:hover .draggable-dish-handle {
+  left: 0px;
 }
 .dragging-ticket {
   position: relative;
+  height: 100%;
+  width: 70%;
+  opacity: 1;
 }
 .dragging-ticket::before {
   content: "";
   position: absolute;
   background: rgb(255, 200, 0, 1);
-  height: 110px;
-  width: 140px;
-  z-index: 10000;
+  top: 3px;
+  left: 0;
+  height: calc(100% - 6px);
+  width: 100%;
+  z-index: 998;
 }
 .ghost {
+  position: relative;
   opacity: 1;
 }
 .ghost::before {
   content: "";
   position: absolute;
-  height: 110px;
-  width: 140px;
+  height: calc(100% - 6px);
+  width: 100%;
   background: rgb(255, 200, 0, 1);
-  top: 10px;
-  left: 10px;
+  top: 3px;
+  left: 0;
   z-index: 999;
   opacity: 0.5;
 }
-.dishes-container {
+.row.dishes-container {
   background: transparent;
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  padding: 5px 10px;
+  overflow-y: auto;
+  padding: 3px 6px;
+  max-height: 860px;
   margin: 0;
 }
-.draggable-image-div {
-  height: 110px;
-  width: 140px;
+.dishes-container::-webkit-scrollbar {
+  width: 10px;
 }
+
+.dishes-container::-webkit-scrollbar-track {
+  background: whitesmoke;
+}
+
+.dishes-container::-webkit-scrollbar-thumb {
+  background: var(--lightGrey);
+}
+
+.dishes-container::-webkit-scrollbar-thumb:hover {
+  background: rgb(200, 200, 200);
+}
+
+.dishes-container::-webkit-scrollbar-thumb:active {
+  background: rgb(120, 120, 120);
+}
+
 .draggable-dish-name-div {
   position: absolute;
   top: 0;
@@ -1051,91 +1964,185 @@ nav a:hover::before {
   height: 100%;
   width: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   font-family: "Work Sans", sans-serif;
   font-weight: 600;
   text-transform: uppercase;
   color: var(--lightYellow);
-  font-size: 12px;
+  font-size: 15px;
   padding: 0 5px;
   z-index: 998;
 }
 .draggable-dish-name {
   margin: 0;
-  margin-top: 2.5px;
   text-align: center;
   text-overflow: ellipsis;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
+  padding-left: 54px;
 }
-.shadow-box {
-  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.2);
+.dish-list-search-div {
+  margin-top: -35px;
+  margin-bottom: -1px;
 }
 .draggable-dish-search-icon {
   position: relative;
   z-index: 999;
-  top: -7px;
-  left: 7px;
-  color: var(--lightGrey);
+  top: -11px;
+  left: 8px;
+  color: var(--baseGrey);
   transition: all 0.2s ease-out;
+  font-size: 24px;
 }
-.draggable-dish-search-input {
+.form-control.custom-input.draggable-dish-search-input {
   position: relative;
-  padding-left: 35px;
+  padding-left: 45px;
   top: 24px;
+  font-size: 24px;
+  border-color: transparent;
+  background: whitesmoke;
+}
+.draggable-dish-search-input::placeholder {
+  color: var(--lightGrey);
+  font-size: 20px;
 }
 .draggable-dish-search-input:focus + .draggable-dish-search-icon {
   color: var(--baseYellow);
 }
-
-.shopping-list-icon {
-  display: inline-block;
+.backpack-header,
+.shopping-list-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+.backpack-header::after,
+.shopping-list-header::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  left: 0;
+  bottom: -5px;
+  background: var(--lightGrey);
+  transition: all 0.2s ease-out;
+  opacity: 0;
+}
+.backpack-header:hover::after,
+.shopping-list-header:hover::after {
+  opacity: 1;
+}
+#shoppingListHighlight {
+  position: absolute;
+  width: 50%;
+  height: 5px;
+  left: 0;
+  bottom: -5px;
+  background: var(--baseGrey);
+  transition: all 0.2s ease-out;
+}
+.shopping-list-item {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 300;
+  padding-left: 15px;
+  transition: all 0.2s ease-out;
+}
+.shopping-list-div {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 880px;
+  transition: all 0.2s ease-out;
+}
+.shopping-list-label {
   position: relative;
-  top: 1px;
-  width: 12px;
-  height: 12px;
-  background: var(--lightYellow);
-  margin-right: 10px;
-  box-shadow: 1.5px 1.5px 2px 0px rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: start;
+  cursor: pointer;
+  width: 100%;
+}
+.shopping-list-label > input {
+  visibility: hidden;
+  position: absolute;
+}
+.shopping-list-col {
+  margin-bottom: 16px;
+}
+.shopping-list-input:checked
+  ~ .shopping-list-col
+  .shopping-list-checkmark::before {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: -10px;
+  border-right: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transform: rotate(45deg);
+  transform-origin: 0% 100%;
+  animation: shopping-list-checkbox-check 0.125s 0.25s
+    cubic-bezier(0.4, 0, 0.23, 1) forwards;
+}
+@keyframes shopping-list-checkbox-check {
+  0% {
+    width: 0;
+    height: 0;
+    border-color: var(--baseGrey);
+    background: var(--baseYellow);
+  }
+  33% {
+    width: 10px;
+    height: 0;
+  }
+  100% {
+    width: 10px;
+    height: 18px;
+    border-color: var(--baseGrey);
+    background: var(--baseYellow);
+  }
+}
+.shopping-list-input:checked ~ .shopping-list-col .shopping-list-checkmark {
+  border: 15px solid var(--baseYellow);
+  animation: shrink-bounce 0.2s cubic-bezier(0.4, 0, 0.23, 1);
+}
+.shopping-list-input:checked ~ .shopping-list-col .shopping-list-item {
+  color: var(--lightGrey);
+}
+.shopping-list-checkmark {
+  position: relative;
+  min-width: 30px;
+  min-height: 30px;
+  width: 30px;
+  height: 30px;
+  background: rgb(235, 235, 235);
+  border: 1px solid var(--lightGrey);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.23, 1);
+}
+.shopping-list-label:hover .shopping-list-checkmark {
+  background: rgb(250, 250, 250);
+}
+.shopping-list-div::-webkit-scrollbar {
+  width: 10px;
 }
 
-.calendar-enter {
-  transform: scaleX(0.4);
-  opacity: 0;
-  position: absolute;
-  right: 16px;
-  left: 16px;
-}
-.calendar-enter-active {
-  transition: all 0.15s;
-  position: absolute;
-  right: 16px;
-  left: 16px;
-}
-.calendar-leave {
-  position: absolute;
-  right: 16px;
-  left: 16px;
-}
-.calendar-leave-active {
-  right: 16px;
-  left: 16px;
-  transition: all 0.1s;
-  position: absolute;
-}
-.calendar-leave-to {
-  transform: scaleX(0.4);
-  opacity: 0;
+.shopping-list-div::-webkit-scrollbar-track {
+  background: whitesmoke;
 }
 
-.calendaPlaceholderr-enter-active {
-  position: absolute;
+.shopping-list-div::-webkit-scrollbar-thumb {
+  background: var(--lightGrey);
 }
-.calendarPlaceholder-leave-active {
-  position: absolute;
+.shopping-list-div::-webkit-scrollbar-thumb:hover {
+  background: rgb(200, 200, 200);
+}
+
+.shopping-list-div::-webkit-scrollbar-thumb:active {
+  background: rgb(120, 120, 120);
 }
 
 .weekSlideLeft-enter {
@@ -1178,6 +2185,10 @@ nav a:hover::before {
   transition: all 0.2s cubic-bezier(0.7, 0.15, 0.9, 0.6);
   z-index: -999;
 }
+.row.main-container {
+  padding-left: 48px;
+  padding-right: 48px;
+}
 /*----------------media--------------*/
 @media (max-width: 1800px) {
   .dish-div {
@@ -1188,37 +2199,25 @@ nav a:hover::before {
   .dish-div {
     width: calc(100% / 4);
   }
-  #calendar-table .row.cell {
-    padding: 8px;
-    min-height: 156px;
-  }
-  .calendar-dragging-ticket::before {
-    height: calc(100% - 16px);
-    width: calc(100% - 16px);
-    top: 8px;
-    left: 8px;
-  }
-  .calendar-ghost::before {
-    height: calc(100% - 16px);
-    width: calc(100% - 16px);
-    top: 8px;
-    left: 8px;
-  }
-  .calendar-enter-active {
-    right: 8px;
-    left: 8px;
-  }
-  .calendar-leave {
-    right: 8px;
-    left: 8px;
-  }
 }
 @media (max-width: 1230px) {
   .dish-div {
     width: calc(100% / 3);
   }
 }
+@media (max-width: 1200px) {
+  .row.main-container {
+    padding-left: 64px;
+    padding-right: 64px;
+  }
+}
 @media (max-width: 991px) {
+  #nav-div {
+    padding: 8px 32px;
+  }
+  .navbrand {
+    margin-right: 0px;
+  }
   #dish-image {
     height: auto;
   }
@@ -1232,12 +2231,9 @@ nav a:hover::before {
   nav a::before {
     bottom: -2px;
   }
-  #nav-items-div {
-    margin-top: 20px;
-  }
   nav li {
     margin: 0;
-    margin-bottom: 10px;
+    margin-top: 10px;
   }
   .slideDishDiv-leave-to,
   .slideDishDiv-enter {
@@ -1246,15 +2242,6 @@ nav a:hover::before {
   .form-control.custom-input.search-input {
     padding-right: 31px;
     padding-left: 31px;
-  }
-  .calendar-dish-name {
-    font-size: 9px;
-  }
-  .dish-image-calendar {
-    min-height: 100px;
-  }
-  #calendar-table .row.cell {
-    min-height: 108px;
   }
   .current-week {
     font-size: 16px;
@@ -1266,39 +2253,43 @@ nav a:hover::before {
   .arrow-button {
     font-size: 45px;
   }
+  .dish-details-div {
+    min-height: 0px;
+  }
+  .edited-dish-details-div {
+    min-height: 0px;
+  }
+  .row.main-container {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+  #dish-name {
+    font-size: 50px;
+  }
+  .ingredient-main-div,
+  .step-main-div {
+    padding: 16px;
+  }
+  .main-add-div {
+    padding: 16px;
+  }
 }
 @media (max-width: 950px) {
   .dish-div {
     width: calc(100% / 2);
-  }
-  #calendar-table .row.cell {
-    padding: 4px;
-  }
-  .calendar-dragging-ticket::before {
-    height: calc(100% - 8px);
-    width: calc(100% - 8px);
-    top: 4px;
-    left: 4px;
-  }
-  .calendar-ghost::before {
-    height: calc(100% - 8px);
-    width: calc(100% - 8px);
-    top: 4px;
-    left: 4px;
-  }
-  .calendar-enter-active {
-    right: 4px;
-    left: 4px;
-  }
-  .calendar-leave {
-    right: 4px;
-    left: 4px;
   }
 }
 @media (max-width: 660px) {
   .dish-div {
     width: calc(100%);
     height: 380px;
+    padding: 0;
+  }
+  #nav-div {
+    padding: 8px 16px;
+  }
+  .header {
+    padding: 0;
   }
   .star-icon {
     font-size: 35px;
@@ -1311,13 +2302,11 @@ nav a:hover::before {
   }
   .preptime p {
     font-size: 18px;
-    font-weight: 500;
     margin-bottom: 0;
     padding: 0;
   }
-  .portions p {
+  .kcal p {
     font-size: 18px;
-    font-weight: 500;
     margin-bottom: 0;
     padding: 0;
   }
@@ -1325,6 +2314,24 @@ nav a:hover::before {
     position: relative;
     top: 0;
     margin-bottom: 0;
+  }
+  .row.main-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  nav li {
+    margin-left: 0;
+  }
+  .dish-details-image-div {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  .ingredient-main-div,
+  .step-main-div {
+    padding: 16px 0px;
+  }
+  .main-add-div {
+    padding: 16px 0px;
   }
 }
 @media (max-width: 575px) {
@@ -1349,25 +2356,8 @@ nav a:hover::before {
   div h5 {
     font-size: 18px;
   }
-  #dish-div,
-  .step-main-div,
-  .ingredient-main-div {
+  #dish-div {
     padding: 16px 16px;
-  }
-  .calendar-dish-name {
-    font-size: 6px;
-  }
-  .button-small.button-xxs.button-delete-calendar-day {
-    position: absolute;
-    right: -4px;
-    bottom: -4px;
-    font-size: 14px;
-  }
-  .dish-image-calendar {
-    min-height: 68px;
-  }
-  #calendar-table .row.cell {
-    min-height: 76px;
   }
   .current-week {
     font-size: 9px;
@@ -1379,11 +2369,9 @@ nav a:hover::before {
   .arrow-button {
     font-size: 25px;
   }
-  .calendar-header {
-    height: 30px;
-  }
-  #calendar-table .col.calendar-header-day {
-    font-size: 12px;
+  .brand-name {
+    font-size: 25px;
+    letter-spacing: 0px;
   }
 }
 @media (max-width: 420px) {
@@ -1401,13 +2389,11 @@ nav a:hover::before {
   }
   .preptime p {
     font-size: 14px;
-    font-weight: 500;
     margin-bottom: 0;
     padding: 0;
   }
-  .portions p {
+  .kcal p {
     font-size: 14px;
-    font-weight: 500;
     margin-bottom: 0;
     padding: 0;
   }
