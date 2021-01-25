@@ -268,7 +268,7 @@
     </div>
 
     <!--similar dishes-->
-    <div class="row px-3 pt-3"><h2>Podobne przepisy:</h2></div>
+    <div class="row px-xl-3 pt-3"><h2>Podobne przepisy:</h2></div>
     <div class="similar-dishes-div py-3">
       <div
         v-for="(dish, index) in similarDishesList"
@@ -784,7 +784,7 @@
                   <span>wybierz</span>
                 </div>
               </div>
-              <h6>Ilość ({{ editedIngredient.unit_name }}):</h6>
+              <h6>Ilość na jedną porcję ({{ editedIngredient.unit_name }}):</h6>
               <input
                 type="number"
                 class="form-control modal-custom-input"
@@ -940,7 +940,7 @@
                   <span>wybierz</span>
                 </div>
               </div>
-              <h6>Ilość ({{ newIngredient.unit_name }}):</h6>
+              <h6>Ilość na jedną porcję ({{ newIngredient.unit_name }}):</h6>
               <input
                 type="number"
                 class="form-control modal-custom-input"

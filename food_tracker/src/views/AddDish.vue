@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container-xl p-0">
     <transition name="fade" mode="out-in">
       <div
         v-if="addingDishLoading"
@@ -205,7 +205,7 @@
                 >
                   <div
                     class="row ml-1 d-flex align-items-center"
-                    style="margin-bottom:5.1px"
+                    style="margin-bottom:6px"
                   >
                     <h5
                       v-if="newIngredient.ingredient_name != ''"
@@ -235,7 +235,7 @@
                         class="form-control custom-input"
                         v-model="newIngredient.amount"
                         :placeholder="
-                          'Podaj ilość składnika w jednostce:  ' +
+                          'Podaj ilość składnika na jedną porcję w jednostce:  ' +
                             newIngredient.unit_name
                         "
                       />

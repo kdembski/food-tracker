@@ -2,7 +2,34 @@
   <div class="container-fluid row py-3 py-lg-4 main-container">
     <div class="col-xl-9 p-0 px-xl-3">
       <!--weeks header-->
-      <div class="row weeks-header mb-2">
+      <div class="row">
+        <div
+          class="col-3 previous-week d-flex justify-content-end align-items-center"
+        >
+          Poprzedni
+        </div>
+
+        <div
+          class="col-2 arrow-button d-flex justify-content-end align-items-center"
+        ></div>
+
+        <div
+          class="col-2 current-week d-flex justify-content-center align-items-center"
+        >
+          <p class="m-0 text-center">Aktualny</p>
+        </div>
+
+        <div
+          class="col-2 arrow-button d-flex justify-content-start align-items-center"
+        ></div>
+
+        <div
+          class="col-3 next-week d-flex justify-content-start align-items-center"
+        >
+          Następny
+        </div>
+      </div>
+      <div class="row mb-3">
         <div
           class="col-3 previous-week d-flex justify-content-end align-items-center"
         >
@@ -53,13 +80,48 @@
       <!--calendar table-->
       <div id="calendar-table">
         <div class="row calendar-header">
-          <div class="col calendar-header-day">Pon</div>
-          <div class="col calendar-header-day">Wto</div>
-          <div class="col calendar-header-day">Śro</div>
-          <div class="col calendar-header-day">Czw</div>
-          <div class="col calendar-header-day">Pią</div>
-          <div class="col calendar-header-day">Sob</div>
-          <div class="col calendar-header-day">Nie</div>
+          <div class="col">
+            <div class="row calendar-header-day">Pon</div>
+            <div class="row calendar-header-day-details">
+              {{ currentWeek[0].day }}.{{ currentWeek[0].month + 1 }}
+            </div>
+          </div>
+          <div class="col">
+            <div class="row calendar-header-day">Wto</div>
+            <div class="row calendar-header-day-details">
+              {{ currentWeek[1].day }}.{{ currentWeek[1].month + 1 }}
+            </div>
+          </div>
+          <div class="col">
+            <div class="row calendar-header-day">Śro</div>
+            <div class="row calendar-header-day-details">
+              {{ currentWeek[2].day }}.{{ currentWeek[2].month + 1 }}
+            </div>
+          </div>
+          <div class="col">
+            <div class="row calendar-header-day">Czw</div>
+            <div class="row calendar-header-day-details">
+              {{ currentWeek[3].day }}.{{ currentWeek[3].month + 1 }}
+            </div>
+          </div>
+          <div class="col">
+            <div class="row calendar-header-day">Pią</div>
+            <div class="row calendar-header-day-details">
+              {{ currentWeek[4].day }}.{{ currentWeek[4].month + 1 }}
+            </div>
+          </div>
+          <div class="col">
+            <div class="row calendar-header-day">Sob</div>
+            <div class="row calendar-header-day-details">
+              {{ currentWeek[5].day }}.{{ currentWeek[5].month + 1 }}
+            </div>
+          </div>
+          <div class="col">
+            <div class="row calendar-header-day">Nie</div>
+            <div class="row calendar-header-day-details">
+              {{ currentWeek[6].day }}.{{ currentWeek[6].month + 1 }}
+            </div>
+          </div>
         </div>
         <transition name="fadeLong" mode="out-in">
           <div
@@ -250,6 +312,15 @@
                   </div>
                 </div>
               </draggable>
+              <div class="daily-kcal-sum-div">
+                <div class="row">
+                  suma
+                  <div class="daily-kcal-sum-icon">
+                    <i class="fas fa-fire-alt"></i>
+                  </div>
+                </div>
+                <div class="row">{{ day.dailyKcalSum }} kcal</div>
+              </div>
             </div>
           </div>
           <div v-else class="row calendar-div-loading" key="loadingDiv">
@@ -296,11 +367,7 @@
             handle=".draggable-dish-handle"
           >
             <transition-group class="row dishes-container">
-              <div
-                v-for="(dish, index) in filteredDishes"
-                :key="index"
-                class="draggable-dish-border"
-              >
+              <div v-for="(dish, index) in filteredDishes" :key="index">
                 <router-link
                   :to="{
                     name: 'DishDetails',
@@ -334,7 +401,6 @@
                     <div class="draggable-dish-name-div">
                       <p class="draggable-dish-name">{{ dish.dish_name }}</p>
                     </div>
-                    
                   </div>
                 </router-link>
               </div>
@@ -879,6 +945,7 @@ export default {
         this.gettingAllIngredientsFinished = false;
         this.loadingShoppingListFinished = false;
         for (var i = 0; i < 7; i++) {
+          var dailyKcalSum = 0;
           for (var j = 0; j < 3; j++) {
             this.getIngredientsFormData.dish_id = this.weekDays[i].dishes[
               j
@@ -899,7 +966,9 @@ export default {
               kcalSum = Math.floor(kcalSum);
             }
             this.$set(this.weekDays[i].dishes[j], "kcalSum", kcalSum);
+            dailyKcalSum += kcalSum;
           }
+          this.$set(this.weekDays[i], "dailyKcalSum", dailyKcalSum);
         }
         await this.getShoppingList();
         this.$forceUpdate();
@@ -992,8 +1061,8 @@ export default {
           }
         }
       }
+      await this.getAllDishesIngredients();
       this.$forceUpdate();
-      this.getAllDishesIngredients();
       this.loadingCalendarFinished = true;
     },
 
