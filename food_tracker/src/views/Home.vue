@@ -13,6 +13,44 @@
             oraz planowanie tygodniowych jadłospisów w kalendarzu.
           </p>
         </div>
+
+        <div class="technologies-div">
+          <div class="technologies-item">
+            <div class="technologies-item-text">
+              javascript
+            </div>
+          </div>
+          <div class="technologies-item">
+            <div class="technologies-item-text">
+              html5
+            </div>
+          </div>
+          <div class="technologies-item">
+            <div class="technologies-item-text">
+              css3
+            </div>
+          </div>
+          <div class="technologies-item">
+            <div class="technologies-item-text">
+              php
+            </div>
+          </div>
+          <div class="technologies-item">
+            <div class="technologies-item-text">
+              mysql
+            </div>
+          </div>
+          <div class="technologies-item">
+            <div class="technologies-item-text">
+              vuejs
+            </div>
+          </div>
+          <div class="technologies-item">
+            <div class="technologies-item-text">
+              bootstrap4
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

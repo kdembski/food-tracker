@@ -9,7 +9,7 @@
         <div class="loader"></div>
       </div>
       <div v-else class="container-fluid px-0 py-2" key="mainDiv">
-        <div class="main-add-div">
+        <div class="main-add-div my-0 my-xl-4">
           <transition name="alert">
             <!--error alert-->
             <div
@@ -337,7 +337,7 @@
           </div>
           <div class="border-bottom mx-3"></div>
           <!-- buttons-->
-          <div class="row">
+          <div class="row mb-0 mb-xl-2">
             <div class="button mt-4 ml-3" @click="addAllDishElements">
               <div class="button-icon">
                 <i class="fas fa-check"></i>

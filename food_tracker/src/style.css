@@ -23,28 +23,50 @@
   padding: 30px 0px;
 }
 .home-navbrand {
-  width: 150px;
-  height: 150px;
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
   margin-right: 50px;
+
   background-color: #ffcc00;
-  border: 0px solid black;
-  box-shadow: 0px 0px 1px 1px black;
 }
 .home-brand-name {
+  margin-top: -12px;
   font-size: 100px;
   font-weight: 700;
   letter-spacing: 10px;
   color: var(--baseYellow);
 }
 .home-page-description {
-  padding-top: 20px;
+  padding-top: 25px;
   font-size: 25px;
   font-weight: 200;
   display: flex;
   justify-content: center;
   text-align: center;
   color: var(--lightYellow);
+}
+.technologies-div {
+  margin-top: 30px;
+  padding: 0px 26%;
+}
+.technologies-item {
+  display: inline-block;
+  width: calc(calc(100% / 7) - 10px);
+  margin: 5px 5px;
+  height: 40px;
+  background: var(--baseYellow);
+  color: var(--baseGrey);
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.technologies-item-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 }
 /*----------------dish details--------------*/
 .dish-details-div {
@@ -261,7 +283,8 @@
   transition: all 0.1s ease-out;
 }
 .main-add-div {
-  padding: 16px 48px;
+  padding: 16px 16px;
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
 }
 .step-main-div,
 .ingredient-main-div {
@@ -1449,8 +1472,6 @@ div.row {
   border-radius: 60px;
   margin-right: 25px;
   background-color: #ffcc00;
-  border: 0px solid black;
-  box-shadow: 0px 0px 1px 1px black;
   transition: all 0.15s ease-in-out;
 }
 .brand-name {
@@ -1573,29 +1594,33 @@ nav a:hover::before {
   background-color: #ebffeb;
 }
 /*----------------calendar--------------*/
-
+.weeks-header {
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
 .current-week {
-  font-size: 34px;
+  font-size: 30px;
   font-family: "Work Sans", sans-serif;
   font-weight: 1000;
   padding: 0;
   color: var(--baseGrey);
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
 }
 .previous-week,
 .next-week {
-  font-size: 28px;
+  font-size: 26px;
   font-family: "Work Sans", sans-serif;
   font-weight: 1000;
-  color: var(--baseGrey);
+  color: var(--lightGrey);
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 1px;
 }
 .arrow-button {
-  font-size: 60px;
+  font-size: 50px;
   transition: all 0.1s ease-out;
   color: var(--baseGrey);
+  z-index: 2;
 }
 .arrow-button:hover {
   cursor: pointer;
@@ -1646,7 +1671,7 @@ nav a:hover::before {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 616px;
+  height: 603px;
   width: 100%;
   background: transparent;
 }
@@ -1912,8 +1937,10 @@ nav a:hover::before {
   padding-right: 4px;
 }
 .daily-kcal-sum-div {
-  margin: 20px 10px;
+  padding: 10px 10px;
+  margin-top: 7px;
   color: var(--baseGrey);
+  background: whitesmoke;
   font-size: 20px;
   font-family: "Work Sans", sans-serif;
   font-weight: 600;
@@ -1928,6 +1955,115 @@ nav a:hover::before {
   justify-content: center;
   align-items: center;
   padding-left: 6px;
+}
+.options-div {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  height: auto;
+  margin-top: 52px;
+}
+.options-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 270px;
+  height: 90px;
+  background: var(--lightGrey);
+  overflow: hidden;
+  transition: all 0.2s ease-out;
+  cursor: pointer;
+}
+.options-button .option-button-icon {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 88%;
+  width: 30%;
+  top: 6%;
+  left: 0;
+  font-size: 50px;
+  color: var(--baseGrey);
+  border-right: 4px solid var(--baseGrey);
+  transition: all 0.2s ease-out;
+}
+.options-button .option-button-text {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100%;
+  width: 70%;
+  top: 0;
+  left: 30%;
+  font-size: 22px;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 800;
+  color: var(--baseGrey);
+  text-transform: uppercase;
+  transition: all 0.2s ease-out;
+}
+.options-button:hover {
+  background: var(--baseGrey);
+}
+.options-button:hover .option-button-text {
+  left: 100%;
+}
+.options-button:hover .option-button-icon {
+  color: var(--lightYellow);
+  width: 100%;
+  font-size: 70px;
+}
+
+.weeks-counter-div {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.weeks-counter-element {
+  width: 25px;
+  height: 60px;
+  background: whitesmoke;
+  cursor: pointer;
+  transition: all 0.1s ease-out;
+}
+.weeks-counter-element:hover {
+  background: var(--baseGrey);
+}
+.weeks-counter-element:hover .week-number{
+  color: var(--baseGrey);
+}
+.weeks-counter-element.active {
+  background: var(--baseYellow) !important;
+}
+.week-number {
+  position: relative;
+  top: 60px;
+  display: flex;
+  justify-content: center;
+  color: var(--lightGrey);
+  font-size: 18px;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 800;
+}
+.week-number.active {
+  color: var(--baseGrey);
+}
+.year-number {
+  margin: 15px 0px;
+  background: var(--baseGrey);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: var(--lightYellow);
+  font-size: 25px;
+  letter-spacing: 30px;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 1000;
 }
 .dish-image-sm {
   position: relative;
@@ -1956,7 +2092,7 @@ nav a:hover::before {
 .draggable-dish-div::before {
   content: "";
   position: absolute;
-  background: rgb(240, 240, 240, 1);
+  background: rgb(230, 230, 230, 1);
   height: 100%;
   width: 100%;
   left: 0;
@@ -2002,6 +2138,17 @@ nav a:hover::before {
   position: relative;
   height: 100%;
   width: 70%;
+  opacity: 1;
+}
+.dragging-ticket::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  height: calc(100% - 6px);
+  width: 100%;
+  background: rgb(66, 66, 66, 1);
+  left: 0;
+  z-index: 999;
   opacity: 1;
 }
 .ghost {
@@ -2119,9 +2266,9 @@ nav a:hover::before {
   content: "";
   position: absolute;
   width: 100%;
-  height: 5px;
+  height: 4px;
   left: 0;
-  bottom: -5px;
+  bottom: -4px;
   background: var(--lightGrey);
   transition: all 0.2s ease-out;
   opacity: 0;
@@ -2133,9 +2280,9 @@ nav a:hover::before {
 #shoppingListHighlight {
   position: absolute;
   width: 50%;
-  height: 5px;
+  height: 4px;
   left: 0;
-  bottom: -5px;
+  bottom: -4px;
   background: var(--baseGrey);
   transition: all 0.2s ease-out;
 }
@@ -2149,7 +2296,7 @@ nav a:hover::before {
 .shopping-list-div {
   overflow-y: auto;
   overflow-x: hidden;
-  max-height: 895px;
+  max-height: 894px;
   transition: all 0.2s ease-out;
 }
 .shopping-list-label {
@@ -2249,13 +2396,13 @@ nav a:hover::before {
   position: absolute;
   transition: all 0.2s cubic-bezier(0.7, -0.5, 0.4, 1.1);
   transition-delay: 0.1s;
-  z-index: -999;
+  z-index: 1;
 }
 .weekSlideLeft-leave-active {
   filter: blur(2px);
   position: absolute;
   transition: all 0.2s cubic-bezier(0.7, 0.15, 0.9, 0.6);
-  z-index: -999;
+  z-index: 1;
 }
 .weekSlideRight-enter {
   transform: translateX(300%);
@@ -2269,13 +2416,13 @@ nav a:hover::before {
   position: absolute;
   transition: all 0.2s cubic-bezier(0.7, -0.5, 0.4, 1.1);
   transition-delay: 0.1s;
-  z-index: -999;
+  z-index: 1;
 }
 .weekSlideRight-leave-active {
   filter: blur(2px);
   position: absolute;
   transition: all 0.2s cubic-bezier(0.7, 0.15, 0.9, 0.6);
-  z-index: -999;
+  z-index: 1;
 }
 .row.main-container {
   padding-left: 48px;
@@ -2286,15 +2433,24 @@ nav a:hover::before {
   .dish-div {
     width: calc(100% / 5);
   }
+  .technologies-div {
+    padding: 0px 20%;
+  }
 }
 @media (max-width: 1500px) {
   .dish-div {
     width: calc(100% / 4);
   }
+  .technologies-div {
+    padding: 0px 15%;
+  }
 }
 @media (max-width: 1230px) {
   .dish-div {
     width: calc(100% / 3);
+  }
+  .technologies-div {
+    padding: 0px 10%;
   }
 }
 @media (max-width: 1200px) {
@@ -2311,6 +2467,7 @@ nav a:hover::before {
     margin-right: 40px;
   }
   .home-brand-name {
+    margin-top: 0px;
     font-size: 75px;
     font-weight: 700;
     letter-spacing: 7px;
@@ -2398,6 +2555,10 @@ nav a:hover::before {
   .home-page-description {
     padding-top: 20px;
     font-size: 20px;
+  }
+  .technologies-item {
+    width: calc(calc(100% / 4) - 10px);
+    font-size: 14px;
   }
 }
 @media (max-width: 950px) {
@@ -2516,6 +2677,9 @@ nav a:hover::before {
     padding-top: 20px;
     font-size: 16px;
   }
+  .technologies-div {
+    padding: 0px 0%;
+  }
 }
 @media (max-width: 420px) {
   .dish-div {
@@ -2555,6 +2719,9 @@ nav a:hover::before {
   }
   .home-page-description {
     padding-top: 20px;
-    font-size: 14px;
+    font-size: 15px;
+  }
+  .technologies-item {
+    width: calc(calc(100% / 2) - 10px);
   }
 }

@@ -2,81 +2,86 @@
   <div class="container-fluid row py-3 py-lg-4 main-container">
     <div class="col-xl-9 p-0 px-xl-3">
       <!--weeks header-->
-      <div class="row">
-        <div
-          class="col-3 previous-week d-flex justify-content-end align-items-center"
-        >
-          Poprzedni
+      <div class="weeks-header">
+        <div class="row">
+          <div
+            class="col-3 previous-week d-flex justify-content-end align-items-center"
+            style="font-size:22px;"
+          >
+            Poprzedni
+          </div>
+
+          <div
+            class="col-2 arrow-button d-flex justify-content-end align-items-center"
+          ></div>
+
+          <div
+            class="col-2 current-week d-flex justify-content-center align-items-center"
+          >
+            <p class="m-0 text-center">Aktualny</p>
+          </div>
+
+          <div
+            class="col-2 arrow-button d-flex justify-content-start align-items-center"
+          ></div>
+
+          <div
+            class="col-3 next-week d-flex justify-content-start align-items-center"
+            style="font-size:22px;"
+          >
+            Następny
+          </div>
         </div>
+        <div class="row">
+          <div
+            class="col-3 previous-week d-flex justify-content-end align-items-center"
+          >
+            <transition :name="weekSlideDirection">
+              <div :key="previousWeek[0].day">
+                {{ previousWeek[0].day }}.{{ previousWeek[0].month + 1 }} -
+                {{ previousWeek[6].day }}.{{ previousWeek[6].month + 1 }}
+              </div>
+            </transition>
+          </div>
 
-        <div
-          class="col-2 arrow-button d-flex justify-content-end align-items-center"
-        ></div>
+          <div
+            class="col-2 arrow-button d-flex justify-content-end align-items-center"
+            @click="changeToPreviousWeek"
+          >
+            <i class="fas fa-chevron-left"></i>
+          </div>
 
-        <div
-          class="col-2 current-week d-flex justify-content-center align-items-center"
-        >
-          <p class="m-0 text-center">Aktualny</p>
-        </div>
+          <div
+            class="col-2 current-week d-flex justify-content-center align-items-center"
+          >
+            <transition :name="weekSlideDirection">
+              <div :key="currentWeek[0].day">
+                {{ currentWeek[0].day }}.{{ currentWeek[0].month + 1 }} -
+                {{ currentWeek[6].day }}.{{ currentWeek[6].month + 1 }}
+              </div>
+            </transition>
+          </div>
 
-        <div
-          class="col-2 arrow-button d-flex justify-content-start align-items-center"
-        ></div>
+          <div
+            class="col-2 arrow-button d-flex justify-content-start align-items-center"
+            @click="changeToNextWeek"
+          >
+            <i class="fas fa-chevron-right"></i>
+          </div>
 
-        <div
-          class="col-3 next-week d-flex justify-content-start align-items-center"
-        >
-          Następny
+          <div
+            class="col-3 next-week d-flex justify-content-start align-items-center"
+          >
+            <transition :name="weekSlideDirection">
+              <div :key="nextWeek[0].day">
+                {{ nextWeek[0].day }}.{{ nextWeek[0].month + 1 }} -
+                {{ nextWeek[6].day }}.{{ nextWeek[6].month + 1 }}
+              </div>
+            </transition>
+          </div>
         </div>
       </div>
-      <div class="row mb-3">
-        <div
-          class="col-3 previous-week d-flex justify-content-end align-items-center"
-        >
-          <transition :name="weekSlideDirection">
-            <div :key="previousWeek[0].day">
-              {{ previousWeek[0].day }}.{{ previousWeek[0].month + 1 }} -
-              {{ previousWeek[6].day }}.{{ previousWeek[6].month + 1 }}
-            </div>
-          </transition>
-        </div>
 
-        <div
-          class="col-2 arrow-button d-flex justify-content-end align-items-center"
-          @click="changeToPreviousWeek"
-        >
-          <i class="fas fa-chevron-left"></i>
-        </div>
-
-        <div
-          class="col-2 current-week d-flex justify-content-center align-items-center"
-        >
-          <transition :name="weekSlideDirection">
-            <div :key="currentWeek[0].day">
-              {{ currentWeek[0].day }}.{{ currentWeek[0].month + 1 }} -
-              {{ currentWeek[6].day }}.{{ currentWeek[6].month + 1 }}
-            </div>
-          </transition>
-        </div>
-
-        <div
-          class="col-2 arrow-button d-flex justify-content-start align-items-center"
-          @click="changeToNextWeek"
-        >
-          <i class="fas fa-chevron-right"></i>
-        </div>
-
-        <div
-          class="col-3 next-week d-flex justify-content-start align-items-center"
-        >
-          <transition :name="weekSlideDirection">
-            <div :key="nextWeek[0].day">
-              {{ nextWeek[0].day }}.{{ nextWeek[0].month + 1 }} -
-              {{ nextWeek[6].day }}.{{ nextWeek[6].month + 1 }}
-            </div>
-          </transition>
-        </div>
-      </div>
       <!--calendar table-->
       <div id="calendar-table">
         <div class="row calendar-header">
@@ -327,6 +332,29 @@
             <div class="loader"></div>
           </div>
         </transition>
+      </div>
+      <!--weeks numbers-->
+      <div class="year-number">{{ fullYear }}</div>
+      <div class="weeks-counter-div">
+        <div
+          v-for="(week, index) in 52"
+          :key="index"
+          :class="{
+            'weeks-counter-element active':
+              index == weekNumber - 1 || index == weekNumber - 53,
+            'weeks-counter-element': true,
+          }"
+        >
+          <div
+            :class="{
+              'week-number active':
+                index == weekNumber - 1 || index == weekNumber - 53,
+              'week-number': true,
+            }"
+          >
+            {{ index + 1 }}
+          </div>
+        </div>
       </div>
     </div>
     <div class="col-xl-3 p-0 px-xl-3">
@@ -589,6 +617,8 @@ export default {
       portionsFormData: {},
       showShoppingList: false,
       showDishList: true,
+      weekNumber: "",
+      fullYear: "",
     };
   },
   computed: {
@@ -664,8 +694,15 @@ export default {
   methods: {
     getCurrentDate() {
       this.currentDate = new Date();
+      this.weekNumber = this.getNumberOfWeek();
+      this.fullYear = this.currentDate.getFullYear();
     },
-
+    getNumberOfWeek() {
+      var today = this.currentDate;
+      var firstDayOfYear = new Date(today.getFullYear(), 0, 1);
+      var pastDaysOfYear = (today - firstDayOfYear) / 86400000;
+      return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+    },
     changeToNextWeek() {
       this.weekSlideDirection = "weekSlideRight";
       this.loadingShoppingListFinished = false;
@@ -673,6 +710,8 @@ export default {
       this.currentDate = new Date(this.currentDate);
       this.setCurrentWeekToCalendar();
       this.getCurrentWeekFromDb();
+      this.weekNumber = this.getNumberOfWeek();
+      this.fullYear = this.currentDate.getFullYear();
     },
 
     changeToPreviousWeek() {
@@ -682,6 +721,8 @@ export default {
       this.currentDate = new Date(this.currentDate);
       this.setCurrentWeekToCalendar();
       this.getCurrentWeekFromDb();
+      this.weekNumber = this.getNumberOfWeek();
+      this.fullYear = this.currentDate.getFullYear();
     },
 
     getAllDishes() {

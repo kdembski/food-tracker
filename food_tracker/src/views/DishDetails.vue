@@ -1172,9 +1172,14 @@ export default {
       similarDishesList: [],
     };
   },
-  mounted() {
+  created() {
     this.getCurrentDish();
     this.getIngredients();
+  },
+  mounted() {
+    setTimeout(() => {
+      this.getSimilarDishesList();
+    }, 500);
   },
   methods: {
     //get current dish
@@ -1197,7 +1202,6 @@ export default {
               ingredient.amount = parseFloat(ingredient.amount).toString();
             });
             this.portions = "1";
-            this.getSimilarDishesList();
             this.categoryList = Array.from(this.dish[0].category);
           }
         });
